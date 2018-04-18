@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/solicitante.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">MINHAS SOLICITAÇÕES</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<f:viewAction action="#{minhaSolicitacaoBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Solicitações</h1>
+
+		<h:form id="frm">
+
+			<p:toolbar id="toolbar-solicitacao" style="margin-top:20px">
+				<p:toolbarGroup>
+					<p:commandButton icon="fa fa-cart-plus" value="Itens solicitado"
+						process="@this" update="itens-dialog"
+						oncomplete="PF('ItensSolicitadosDialog').show()"
+						disabled="#{minhaSolicitacaoBean.solicitacaoSelecionada == null}">
+
+						<f:setPropertyActionListener
+							value="#{minhaSolicitacaoBean.solicitacaoSelecionada}"
+							target="#{minhaSolicitacaoBean.solicitacao}" />
+
+					</p:commandButton>
+					<p:commandButton icon="fa fa-cart-arrow-down" value="Itens atendido"
+						process="@this" update="itens-atendido-dialog"
+						oncomplete="PF('ItensAtendidoDialog').show()"
+						disabled="#{minhaSolicitacaoBean.solicitacaoSelecionada == null || !minhaSolicitacaoBean.solicitacaoSelecionada.atendida}">
+
+						<f:setPropertyActionListener
+							value="#{minhaSolicitacaoBean.solicitacaoSelecionada}"
+							target="#{minhaSolicitacaoBean.solicitacaoAtendida}" />
+
+					</p:commandButton>
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton icon="fa fa-search" value="PESQUISAR" update="@form"
+						process="@this painel-solicitacao" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="4" id="painel-solicitacao"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				<p:outputLabel value="STATUS" for="status" />
+				<p:selectOneMenu id="status">
+					<f:selectItem itemLabel="Selecione o status" itemValue="" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="DATA" for="data_de" />
+				<h:panelGroup>
+					<p:calendar id="data_de" size="10"
+						value="#{pesquisaSolicitacaoBean.filtro.data_de}" /> ATÉ <p:calendar
+						id="data_ate" size="10"
+						value="#{pesquisaSolicitacaoBean.filtro.data_ate}" />
+				</h:panelGroup>
+			</p:panelGrid>
+
+			<p:dataTable id="solicitacao-table"
+				value="#{minhaSolicitacaoBean.todasSolicitacoes}" var="solicitacao"
+				style="margin-top: 20px"
+				emptyMessage="Nenhuma solicitacao encontrado." rows="8"
+				sortBy="#{solicitacao.data_solicitacao}" paginator="true"
+				selection="#{minhaSolicitacaoBean.solicitacaoSelecionada}"
+				selectionMode="single" rowKey="#{solicitacao.id}"
+				paginatorPosition="bottom">
+
+				<p:ajax event="rowSelect" update=":frm:toolbar-solicitacao" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-solicitacao" />
+
+				<p:column headerText="ID" style="text-align: center; width: 80px">
+					<h:outputText value="#{solicitacao.id}" />
+				</p:column>
+				
+				<p:column headerText="NUMERO"
+					style="width: 250px; text-align: center;">
+					<h:outputText value="#{solicitacao.numero}" />
+				</p:column>
+				
+				<p:column headerText="STATUS"
+					style="width: 150px; text-align: center;">
+					<h:outputText value="#{solicitacao.status_solicitacao.descricao}" />
+				</p:column>
+				<p:column headerText="DATA"
+					style="width: 150px; text-align: center;">
+					<h:outputText value="#{solicitacao.data_solicitacao}">
+						<f:convertDateTime pattern="dd.MM.yyyy hh:mm:ss" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="SETOR SOLICITANTE"
+					style="width: 250px; text-align: center;">
+					<h:outputText value="#{solicitacao.setor.nome}" />
+				</p:column>
+				<p:column headerText="QUANTIDADE ITEM SOLICITADO"
+					style="width: 150px; text-align: center;">
+					<h:outputText value="#{solicitacao.quant_itens_solicitados}" />
+				</p:column>
+				<p:column headerText="Opções"
+					style="width: 80px; text-align: center;">
+					<p:button outcome="/solicitante/solicitacao/solicitacao" icon="fa fa-external-link" title="Detalhes">
+	    				<f:param name="solicitacao" value="#{solicitacao.id}" />
+	    			</p:button>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog widgetVar="ItensSolicitadosDialog" id="itens-dialog"
+				header="ITENS SOLICITADOS" resizable="false"
+				style="min-width: 300px" responsive="true" modal="true">
+
+				<p:dataTable id="itens-table"
+					value="#{minhaSolicitacaoBean.solicitacao.itens_solicitado}"
+					var="item" style="margin-top: 20px"
+					emptyMessage="Nenhum item na solicitacao." rows="9"
+					sortBy="#{item.id}" paginator="true" paginatorPosition="bottom">
+
+					<p:column headerText="ID" style="text-align: center; width: 80px">
+						<h:outputText value="#{item.id}" />
+					</p:column>
+
+					<p:column headerText="PRODUTO"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.estoque.produto.nome}" />
+					</p:column>
+
+					<p:column headerText="QUANTIDADE"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.quant_solicitada}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:commandButton style="margin-top:15px;" value="FECHAR"
+					id="botaoView" process="@this"
+					oncomplete="PF('ItensSolicitadosDialog').hide()" />
+
+			</p:dialog>
+			
+			
+			<p:dialog widgetVar="ItensAtendidoDialog" id="itens-atendido-dialog"
+				header="ITENS ATENDIDO" resizable="false"
+				style="min-width: 300px" responsive="true" modal="true">
+
+				<p:dataTable id="itens-atendido-table"
+					value="#{minhaSolicitacaoBean.solicitacaoAtendida.itens_atendidos}"
+					var="item" style="margin-top: 20px"
+					emptyMessage="Nenhum item na solicitacao." rows="9"
+					sortBy="#{item.id}" paginator="true" paginatorPosition="bottom">
+
+					<p:column headerText="ID" style="text-align: center; width: 80px">
+						<h:outputText value="#{item.id}" />
+					</p:column>
+
+					<p:column headerText="PRODUTO"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.estoque.produto.nome}" />
+					</p:column>
+
+					<p:column headerText="QUANTIDADE"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.quant_atendida}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:commandButton style="margin-top:15px;" value="FECHAR"
+					id="botaoAtendido" process="@this"
+					oncomplete="PF('ItensAtendidoDialog').hide()" />
+
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

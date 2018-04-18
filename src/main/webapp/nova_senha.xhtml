@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Recuperação de senha</title>
+	<h:outputStylesheet library="css" name="styles.css" />
+</h:head>
+<h:body>
+	<header>
+		<div>
+			<h:graphicImage width="150px" height="60px" library="imagens"
+				name="logo.png" />
+		</div>
+	</header>
+	<div id="corpo">
+		<h:form id="frm" method="post" prependId="false">
+
+			<p:messages id="messages" autoUpdate="true" closable="true" />
+
+			<div id="frm-login">
+				<h:graphicImage width="150px" height="60px" library="imagens" name="logo.png" />
+				<h:panelGrid columns="2" styleClass="grid-login">
+					<p:outputLabel value="Nova senha: " />
+					<p:inputText size="50" id="senha" value="#{setorRecuperacaoTokenBean.senha}" />
+					<p:outputLabel value="Repita a senha: " />
+					<p:inputText size="50" id="repitaemail" value="#{setorRecuperacaoTokenBean.confirmaSenha}" />
+					<h:panelGroup />
+					<h:panelGroup style="margin-top:10px">
+						<p:commandButton value="Recuperar senha" action="#{setorRecuperacaoTokenBean.alterarSenha}" process="@form"/>
+					</h:panelGroup>
+
+				</h:panelGrid>
+			</div>
+		</h:form>
+	</div>
+	<footer> </footer>
+</h:body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title><ui:insert name="title">Area do solicitante</ui:insert></title>
+	<h:outputStylesheet library="css" name="styles.css" />
+</h:head>
+<h:body>
+	<header>
+		<div style="float: left;">
+			<h:graphicImage width="120px" height="60px" library="imagens"
+				name="logo.png" />
+		</div>
+		<div style="float: right; margin-right: 110px">
+			<span
+				style="float: left; height: 30px; line-height: 30px; margin-right: 60px; margin-top: 10px;">
+				Olá #{seguranca.nomeUsuario} </span>
+
+			<h:form style="display: inline-block; margin-top:10px;">
+				<p:menubar styleClass="menu-sistema">
+					<p:submenu icon="fa fa-upload" label="Solicitações">
+						<p:menuitem icon="fa fa-shopping-cart" value="Efetuar solicitacao"
+							outcome="/solicitante/solicitacao/solicitacao" />
+						<p:menuitem icon="fa fa-book" value="Historico"
+							outcome="/solicitante/solicitacao/historico" />
+					</p:submenu>
+					<p:submenu icon="fa fa-database" label="Estoque">
+						<p:menuitem icon="fa fa-database" value="Consulta no estoque"
+							outcome="/solicitante/estoque/estoque" />
+					</p:submenu>
+					<p:submenu icon="fa fa-print" label="Relatórios">
+						<p:menuitem icon="fa fa-file-pdf-o" value="Minhas solicitações"
+							action="#{relatorioMinhasSolicitacoesBean.emitir}" ajax="false">
+							<f:setPropertyActionListener
+								value="#{minhaSolicitacaoBean.usuarioLogado.setor}"
+								target="#{relatorioMinhasSolicitacoesBean.setor}" />
+						</p:menuitem>
+						<p:menuitem icon="fa fa-file-pdf-o" value="Estoque atual" action="#{relatorioSituacaoEstoqueBean.emitirEstoqueSolicitante}" ajax="false" />
+					</p:submenu>
+					<p:submenu icon="fa fa-wrench" label="Configurações">
+						<p:menuitem icon="fa fa-bell-o" value="Notificacoes" outcome="/solicitante/index" />
+					</p:submenu>
+					<p:submenu icon="fa fa-navicon" label="Opções">
+					    <p:menuitem icon="fa fa-user" value="Minha conta" outcome="/solicitante/perfil" />
+						<p:menuitem icon="fa fa-exchange" value="Trocar perfil" outcome="/perfil" />
+						<p:menuitem icon="fa fa-sign-out" value="Sair" url="/logout" />
+					</p:submenu>
+				</p:menubar>
+			</h:form>
+		</div>
+		<div style="">
+			<h:form id="frm_notifica">
+				<p:growl id="gerar_notificacao" sticky="true" />  
+			</h:form>
+		</div>
+		<div style="clear: both"></div>
+	</header>
+	<div id="corpo">
+		<ui:insert name="corpo" />
+	</div>
+	<footer>
+		<div>
+			Cookiesoft Soluções em TI - <a href="http://bit.ly/Y8saFl"
+				target="_blank">www.cookiesoft.com.br</a><br /> Desenvolvido por:
+			Setor de Gerencia de Sistemas
+		</div>
+	</footer>
+</h:body>
+</html>

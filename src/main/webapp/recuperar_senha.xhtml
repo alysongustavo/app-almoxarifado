@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Acesso ao sistema</title>
+	<h:outputStylesheet library="css" name="styles.css" />
+</h:head>
+<h:body>
+	<header>
+		<div>
+			<h:graphicImage width="150px" height="60px" library="imagens"
+				name="logo.png" />
+		</div>
+	</header>
+	<div id="corpo">
+		<h:form id="frm" prependId="false">
+
+			<p:messages id="messages" autoUpdate="true" closable="true" />
+
+			<div id="frm-login">
+				<h:graphicImage width="150px" height="60px" library="imagens" name="logo.png" />
+				<h:panelGrid columns="2" styleClass="grid-login">
+					<p:outputLabel value="Email: " />
+					<p:inputText size="50" id="email" value="#{setorSolicitarRecuperacaoSenhaBean.email}" />
+					<h:panelGroup />
+					<h:panelGroup style="margin-top:10px">
+						<p:commandButton value="Recuperar senha" action="#{setorSolicitarRecuperacaoSenhaBean.recuperar}" />
+					</h:panelGroup>
+
+				</h:panelGrid>
+			</div>
+		</h:form>
+	</div>
+	<footer> </footer>
+</h:body>
+</html>

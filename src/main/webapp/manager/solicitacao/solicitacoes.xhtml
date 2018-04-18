@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">SOLICITAÇÕES</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<f:viewAction action="#{pesquisaSolicitacaoBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Solicitações</h1>
+
+		<h:form id="frm">
+		
+			<p:messages id="msgs" closable="true" />
+
+			<p:toolbar id="toolbar-solicitacao" style="margin-top:20px">
+				<p:toolbarGroup>
+					<p:commandButton icon="fa fa-cart-plus" value="Itens solicitado"
+						process="@this" update="itens-dialog"
+						oncomplete="PF('ItensSolicitadosDialog').show()"
+						disabled="#{pesquisaSolicitacaoBean.solicitacaoSelecionada == null}">
+
+						<f:setPropertyActionListener
+							value="#{pesquisaSolicitacaoBean.solicitacaoSelecionada}"
+							target="#{pesquisaSolicitacaoBean.solicitacao}" />
+
+					</p:commandButton>
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="PESQUISAR" icon="fa fa-search" update="@form"
+						action="#{pesquisaSolicitacaoBean.pesquisar}" process="@this painel-solicitacao" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="4" id="painel-solicitacao"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				<p:outputLabel value="STATUS" for="status" />
+				<p:selectManyCheckbox id="status" value="#{pesquisaSolicitacaoBean.filtro.status}">
+					<f:selectItems value="#{pesquisaSolicitacaoBean.statusSolicitacao}"
+						var="status" itemLabel="#{status.descricao}"
+						itemValue="#{status}" />
+				</p:selectManyCheckbox>
+
+				<p:outputLabel value="DATA" for="data_de" />
+				<h:panelGroup>
+					<p:calendar id="data_de" size="10"
+						value="#{pesquisaSolicitacaoBean.filtro.data_de}" /> ATÉ <p:calendar
+						id="data_ate" size="10"
+						value="#{pesquisaSolicitacaoBean.filtro.data_ate}" />
+				</h:panelGroup>
+			</p:panelGrid>
+
+			<p:dataTable id="solicitacao-table"
+				value="#{pesquisaSolicitacaoBean.todasSolicitacoes}"
+				var="solicitacao" style="margin-top: 20px"
+				emptyMessage="Nenhuma solicitacao encontrado." rows="8"
+				paginator="true" paginatorPosition="bottom"
+				sortBy="#{solicitacao.data_solicitacao}"
+				selection="#{pesquisaSolicitacaoBean.solicitacaoSelecionada}"
+				selectionMode="single" rowKey="#{solicitacao.id}">
+
+				<p:ajax event="rowSelect" update=":frm:toolbar-solicitacao" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-solicitacao" />
+
+				<p:column headerText="ID" style="text-align: center; width: 80px">
+					<h:outputText value="#{solicitacao.id}" />
+				</p:column>
+				<p:column headerText="NUMERO DA SOLICITAÇÃO"
+					style="width: 250px; text-align: center;">
+					<h:outputText value="#{solicitacao.numero}" />
+				</p:column>
+				<p:column headerText="STATUS"
+					style="width: 150px; text-align: center;">
+					<h:outputText value="#{solicitacao.status_solicitacao.descricao}" />
+				</p:column>
+				<p:column headerText="DATA DA SOLICITAÇÃO"
+					style="width: 150px; text-align: center;">
+					<h:outputText value="#{solicitacao.data_solicitacao}">
+						<f:convertDateTime pattern="dd.MM.yyyy hh:mm:ss" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="ENTIDADE SOLICITANTE"
+					style="width: 250px; text-align: center;">
+					<h:outputText value="#{solicitacao.setor.nome}" />
+				</p:column>
+				
+				<p:column headerText="QUANTIDADE ITEM SOLICITADO"
+					style="width: 150px; text-align: center;">
+					<h:outputText value="#{solicitacao.quant_itens_solicitados}" />
+				</p:column>
+				<p:column headerText="Opções"
+					style="width: 150px; text-align: center;">
+					<p:button outcome="/manager/atendimento/atendimento" icon="ui-icon-pencil" title="Detalhes">
+	    				<f:param name="solicitacao" value="#{solicitacao.id}" />
+	    			</p:button>
+	    			<p:commandButton icon="ui-icon-document" title="Colocar em analise"
+	    			    disabled="#{solicitacao.atendida || solicitacao.emAnalise}"
+					    action="#{pesquisaSolicitacaoBean.colocarEmAnalise}" process="@this" update="solicitacao-table :frm:msgs" >
+						<f:setPropertyActionListener
+							value="#{solicitacao}"
+							target="#{pesquisaSolicitacaoBean.solicitacaoEmAnalise}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog widgetVar="ItensSolicitadosDialog" id="itens-dialog"
+				header="ITENS SOLICITADOS" resizable="false"
+				style="min-width: 300px" responsive="true" modal="true">
+
+				<p:dataTable id="itens-table"
+					value="#{pesquisaSolicitacaoBean.solicitacao.itens_solicitado}"
+					var="item"
+					emptyMessage="Nenhum item na solicitacao." rows="9"
+					sortBy="#{item.id}" paginator="true" paginatorPosition="bottom">
+
+					<p:column headerText="ID" style="text-align: center; width: 80px">
+						<h:outputText value="#{item.id}" />
+					</p:column>
+
+					<p:column headerText="PRODUTO"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.estoque.produto.nome}" />
+					</p:column>
+
+					<p:column headerText="QUANTIDADE"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.quant_solicitada}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:commandButton style="margin-top:15px;" value="FECHAR"
+					id="botaoView" process="@this"
+					oncomplete="PF('ItensSolicitadosDialog').hide()" />
+
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

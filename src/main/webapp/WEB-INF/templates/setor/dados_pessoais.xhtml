@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panelGrid columns="4" style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo, rotulo, campo">
+		
+					<p:outputLabel value="NOME" for="nome" />
+					<p:inputText id="nome" value="#{setorVisualizarPerfilBean.setor_logado.nome}"
+						size="25" maxlength="60" required="true" />
+
+					<p:outputLabel value="ORGÂO" for="insert_orgao" />
+					<p:inputText id="insert_orgao" value="#{setorVisualizarPerfilBean.setor_logado.orgao.nome}"
+						size="25" maxlength="60" required="true" />
+
+					<p:outputLabel value="GRUPO" for="grupo" />
+					<p:selectManyMenu id="grupo"
+						value="#{setorVisualizarPerfilBean.setor_logado.grupos}" required="true"
+						converter="grupoConverter">
+						<f:attribute name="collectionType" value="java.util.ArrayList"/>
+						<f:selectItems value="#{setorVisualizarPerfilBean.setor_logado.grupos}" var="grupo"
+							itemLabel="#{grupo.descricao}" itemValue="#{grupo}" />
+					</p:selectManyMenu>
+
+					<p:outputLabel value="RESPONSAVEL" for="responsavel" />
+					<p:inputText id="responsavel"
+						value="#{setorVisualizarPerfilBean.setor_logado.responsavel}" size="25"
+						maxlength="60" required="true" />
+
+					<p:outputLabel value="CPF DO RESPONSAVEL" for="cpf" />
+					<p:inputMask id="cpf" size="25" mask="999.999.999-99"
+						value="#{setorVisualizarPerfilBean.setor_logado.cpf_responsavel}"
+						maxlength="20" required="true" />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+	</p:panelGrid>
+  	
+</ui:composition>

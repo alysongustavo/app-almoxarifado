@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Acesso ao sistema</title>
+	<h:outputStylesheet library="css" name="styles.css" />
+</h:head>
+<h:body>
+	<header>
+		<div>
+			<h:graphicImage width="150px" height="60px" library="imagens"
+				name="logo.png" />
+		</div>
+	</header>
+	<div
+		style="width: 250px; margin: 0 auto; margin-top: 20px;">
+		<center>
+			<h:graphicImage width="180px;" height="60px" library="imagens"
+				name="logo.png" />
+			<br />
+			<p:outputLabel value="Selecione seu perfil" />
+		</center>
+	</div>
+	<div id="corpo">
+		<h:form id="frm">
+			<div id="frm-login">
+
+				<div style="float: left;">
+					<p:button outcome="/manager/index" value="OPERADOR"
+						icon="fa fa-user" />
+				</div>
+				<div style="float: right;">
+					<p:button outcome="/solicitante/index" value="SOLICITANTE"
+						icon="fa fa-user" />
+				</div>
+			</div>
+		</h:form>
+	</div>
+	<footer> 
+		<div>
+			Cookiesoft Soluções em TI - <a href="http://bit.ly/Y8saFl"
+				target="_blank">www.cookiesoft.com.br</a><br /> Desenvolvido por:
+			Setor de Gerencia de Sistemas
+		</div>
+	</footer>
+</h:body>
+</html>

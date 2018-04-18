@@ -1,0 +1,29 @@
+<html>
+    <body>
+        <center>
+          <img src="https://uploaddeimagens.com.br/images/000/928/621/full/logo.png" alt=Cookiesoft Soluções em TI" height="150" width="500"/>
+        </center>
+        <br/>
+                
+        <p>Olá senhor(a) $setor.responsavel , sua solicitação de recuperação de senha foi recebida. Veja os detalhes abaixo:</p>
+        <br/>
+        
+        <table>
+            <tr>
+                <td>Chave de recuperação:</td>
+                <td>$setor.token</td>
+            </tr>
+            <tr>
+                <td>Link para recuperação:</td>
+                <td><a href="http://localhost:9090/almoxarifado/nova_senha.xhtml?token=$setor.token">Clique aqui</a></td>
+            </tr>
+        </table>
+        
+        <br/>
+        <br/>
+        
+        Atenciosamente,<br/>
+        Cookiesoft <br/>
+        Soluções em TI
+    </body>
+</html>

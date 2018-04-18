@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panelGrid columns="4" style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo, rotulo, campo">
+		
+					<p:outputLabel value="TELEFONE" for="telefone" />
+					<p:inputMask id="telefone" size="25" mask="(99)9999-9999"
+						value="#{setorVisualizarPerfilBean.setor_logado.contato_setor.telefone}"
+						maxlength="20" />
+
+					<p:outputLabel value="CELULAR" for="celular" />
+					<p:inputMask id="celular" size="25" mask="(99)99999-9999"
+						value="#{setorVisualizarPerfilBean.setor_logado.contato_setor.celular}"
+						maxlength="20" />
+
+					<p:outputLabel value="EMAIL" for="email" />
+					<p:inputText id="email" size="30"
+						value="#{setorVisualizarPerfilBean.setor_logado.contato_setor.email}"
+						maxlength="50" />
+
+					<p:outputLabel value="WHATSAPP" for="whatsapp" />
+					<p:inputMask id="whatsapp" size="25" mask="(99)99999-9999"
+						value="#{setorVisualizarPerfilBean.setor_logado.contato_setor.whatsapp}"
+						maxlength="20" />
+		
+	</p:panelGrid>
+  	
+</ui:composition>

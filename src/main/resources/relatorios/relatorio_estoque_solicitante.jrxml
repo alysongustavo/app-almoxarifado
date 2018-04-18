@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_estoque" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="3c96f76b-61e9-4eda-b76a-11306c3eb55e">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<parameter name="IMAGE" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT p.nome as nome, e.quant_total, c.nome as categoria FROM estoque as e 
+INNER JOIN produto as p ON e.produto_id = p.id
+INNER JOIN categoria as c ON p.categoria_id = c.id
+ORDER BY p.nome]]>
+	</queryString>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+	</field>
+	<field name="quant_total" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="quant_total"/>
+	</field>
+	<field name="categoria" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="categoria"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="159" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
+				<reportElement positionType="FixRelativeToBottom" x="222" y="11" width="110" height="40" uuid="8f50a2a3-05e9-4979-bfd6-7b8401086d1a"/>
+				<imageExpression><![CDATA[$P{IMAGE}+"caapora_logo_gestao.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="206" y="53" width="142" height="16" uuid="0d66627b-bcc5-4254-91bb-0857a058a529"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Secretária de administração]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="220" y="68" width="114" height="14" uuid="6463ffc5-4fdd-47a8-ba90-a49d5a50b839"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Setor de Almoxarifado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="100" width="240" height="20" uuid="8f9c1cd4-35ac-47cc-bcf9-1db2eafca72f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estoque do almoxarifado]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h:mm a">
+				<reportElement x="400" y="129" width="150" height="30" uuid="beb22c93-1661-4c49-81fa-aa01b53b677a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="28" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<rectangle>
+				<reportElement x="0" y="1" width="555" height="26" backcolor="#00FF44" uuid="8da1bf08-5fbc-4ebd-b9ba-019b0561d1f4"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="410" y="3" width="141" height="23" uuid="c1024046-da0b-40e0-945e-2658742e5d76"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CATEGORIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="4" width="244" height="20" uuid="616290e3-e97b-4fdf-aa5f-51ef50fc4969"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="3" width="160" height="24" uuid="92e64fa3-91bf-4978-9340-84fcc560328a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QUANTIDADE TOTAL]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="34" splitType="Stretch">
+			<textField>
+				<reportElement x="3" y="0" width="247" height="33" uuid="b1f20a53-c379-48cf-bf39-18e130eb08e4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="410" y="0" width="143" height="33" uuid="90ae0271-d8cc-46ca-9ba1-e1bd05a75a89"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{categoria}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="0" width="160" height="34" uuid="975bacb0-e446-403b-9d4c-0a18a14f17fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{quant_total}.compareTo( BigDecimal.ONE) == -1) ? "NÃO" : "SIM"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="62" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<rectangle>
+				<reportElement key="" positionType="FixRelativeToBottom" x="0" y="0" width="555" height="61" forecolor="#45DE4C" backcolor="#1AFF00" uuid="86197673-a62c-447a-ba99-158127499acd"/>
+			</rectangle>
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
+				<reportElement x="470" y="14" width="73" height="35" uuid="6e5c15a9-fb6f-4d07-9498-ad7ca91f2ad7"/>
+				<imageExpression><![CDATA[$P{IMAGE}+"caapora_logo_gestao.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+</jasperReport>

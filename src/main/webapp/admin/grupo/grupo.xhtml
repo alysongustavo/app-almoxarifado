@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/admin.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="title">GRUPOS</ui:define>
+	
+	<ui:define name="corpo">
+	
+		<f:metadata>
+			<f:viewAction action="#{grupoBean.consultar}" />
+		</f:metadata>
+	
+		<h1 class="aw-page-title" style="margin-left: 5px;">Grupos</h1>
+		
+		<h:form id="frm">
+
+		<p:toolbar id="toolbar-informativo" style="margin-top:20px">
+			<p:toolbarGroup>
+				<p:commandButton icon="fa fa-clipboard" value="Novo"
+						action="#{grupoBean.prepararNovoCadastro}" process="@this"
+						update="grupo-dialog" oncomplete="PF('grupoDialog').show()"/>
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:button icon="fa fa-search" value="Pesquisa" />
+			</p:toolbarGroup>
+		</p:toolbar>
+
+		<p:panelGrid columns="2" id="painel-grupo"
+			style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+			<p:outputLabel value="NOME" for="buscar_nome" />
+			<p:inputText id="buscar_nome" size="25" maxlength="20" />
+
+		</p:panelGrid>
+
+		<p:dataTable id="grupo-table" value="#{grupoBean.todosGrupos}" var="grupo"
+			style="margin-top: 20px" emptyMessage="Nenhum grupo encontrado."
+			rows="9" paginator="true" paginatorPosition="bottom">
+			<p:column headerText="ID" style="text-align: center; width: 80px">
+				<h:outputText value="#{grupo.id}" />
+			</p:column>
+			<p:column headerText="NOME" style="width: 250px; text-align: center;">
+				<h:outputText value="#{grupo.nome}" />
+			</p:column>
+			<p:column headerText="DESCRICAO" style="width: 250px; text-align: center;">
+				<h:outputText value="#{grupo.descricao}" />
+			</p:column>
+			<p:column headerText="OPÇÕES" style="width: 100px; text-align: center">
+				<p:button icon="ui-icon-pencil" title="Editar" />
+				<p:commandButton icon="ui-icon-trash" title="Excluir"
+					oncomplete="confirmacaoExclusao.show()" />
+			</p:column>
+		</p:dataTable>
+
+		<p:dialog widgetVar="grupoDialog" id="grupo-dialog" header="NOVO GRUPO" resizable="false"
+			style="min-width: 300px" responsive="true" modal="true">
+			
+			<p:messages id="msgs-dialog" />
+
+			<p:panelGrid columns="2" id="painel-cadastro"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				
+				<p:outputLabel value="NOME" for="nome" />
+				<p:inputText id="nome" value="#{grupoBean.grupoEdicao.nome}" size="40" maxlength="20" />
+				
+				<p:outputLabel value="DESCRICAO" for="descricao" />
+				<p:inputTextarea rows="6" value="#{grupoBean.grupoEdicao.descricao}" id="descricao" cols="40" maxlength="500" />
+				
+			</p:panelGrid>
+			
+			<p:commandButton icon="fa fa-save" style="margin-top:15px;" value="Salvar"
+					id="botaoSalvar" action="#{grupoBean.salvar}"
+					process="grupo-dialog" update="msgs-dialog painel-cadastro grupo-table"
+						oncomplete="if (!args.validationFailed) PF('grupoDialog').hide()" />
+
+		</p:dialog>
+		
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title><ui:insert name="title_public">Template</ui:insert></title>
+	<h:outputStylesheet library="css" name="styles.css" />
+</h:head>
+<h:body>
+	<header>
+		<div style="float: left;">
+			<h:graphicImage width="120px" height="60px" library="imagens"
+				name="logo.png" />
+		</div>
+		<div style="float: right; margin-right: 110px">
+
+			<h:form style="display: inline-block; margin-top:10px;">
+				<p:menubar styleClass="menu-sistema">
+					<p:menuitem value="Entrar" url="/login.xhtml" />
+				</p:menubar>
+			</h:form>
+		</div>
+		<div style="clear: both"></div>
+	</header>
+	<div id="corpo">
+		<ui:insert name="corpo" />
+	</div>
+	<footer>
+		<div>
+			Cookiesoft Soluções em TI - <a href="http://bit.ly/Y8saFl"
+				target="_blank">www.cookiesoft.com.br</a><br /> Desenvolvido por:
+			Setor de Gerencia de Sistemas
+		</div>
+	</footer>
+</h:body>
+</html>

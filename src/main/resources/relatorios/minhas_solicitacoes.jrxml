@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="minhas_solicitacoes" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4e487b3e-cd3c-45ca-aeb3-8226cfbebf0e">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="149"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="842"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="498"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="488"/>
+	<parameter name="ID_SETOR" class="java.lang.Integer"/>
+	<parameter name="IMAGE" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT s.id, s.data_solicitacao, s.numero, s.quant_item_solicitado, s.quant_item_atendido, s.status_solicitacao,  t.id as setor_id, t.nome, t.responsavel
+FROM solicitacao as s 
+INNER JOIN setor as t ON t.id = s.setor_id
+WHERE  t.id = $P{ID_SETOR}]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+	</field>
+	<field name="data_solicitacao" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="data_solicitacao"/>
+	</field>
+	<field name="numero" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="numero"/>
+	</field>
+	<field name="quant_item_solicitado" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="quant_item_solicitado"/>
+	</field>
+	<field name="quant_item_atendido" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="quant_item_atendido"/>
+	</field>
+	<field name="status_solicitacao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="status_solicitacao"/>
+	</field>
+	<field name="setor_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="setor_id"/>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+	</field>
+	<field name="responsavel" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="responsavel"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="199" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<staticText>
+				<reportElement x="206" y="90" width="142" height="16" uuid="0d66627b-bcc5-4254-91bb-0857a058a529"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Secretaria de administração]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="220" y="107" width="114" height="14" uuid="6463ffc5-4fdd-47a8-ba90-a49d5a50b839"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Setor de Almoxarifado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="162" y="125" width="230" height="20" uuid="8f9c1cd4-35ac-47cc-bcf9-1db2eafca72f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Solicitações de materiais]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="153" width="50" height="21" uuid="3f8603cd-dd1d-450e-81be-e976a464a3fc"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Setor:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="174" width="70" height="20" uuid="9d6bef05-ebab-4c13-9876-2f9df53f0120"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsável:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="90" y="174" width="239" height="20" uuid="a8cbeaef-6ef3-4fa7-98fe-2f68145339c7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{responsavel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="153" width="259" height="22" uuid="1cb7d4dc-0654-4cef-817b-023e80d1b532"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="20" y="31" width="108" height="87" uuid="f679d172-46b9-4bd1-b1e2-ba3ea3f1aa4f"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:codeExpression><![CDATA[$F{setor_id}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<image hAlign="Center" vAlign="Middle" isUsingCache="false">
+				<reportElement x="196" y="10" width="163" height="70" uuid="da84dc9c-ab4f-4266-ab1f-1191e0cd0cb9">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{IMAGE}+"caapora_logo_gestao.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="31" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<rectangle>
+				<reportElement x="0" y="0" width="553" height="31" backcolor="#00FF44" uuid="8da1bf08-5fbc-4ebd-b9ba-019b0561d1f4"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="360" y="0" width="100" height="31" uuid="c1024046-da0b-40e0-945e-2658742e5d76"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QUANTIDADE SOLICITADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="135" height="31" uuid="92e64fa3-91bf-4978-9340-84fcc560328a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUMERO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="0" width="93" height="31" uuid="2fc367bc-a071-441e-96e4-35f1953c1740"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QUANTIDADE ATENDIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="0" width="125" height="31" uuid="bfe4151f-f78b-4a0f-aedf-6a5f43377e80"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="0" width="100" height="31" uuid="9a671424-2ad2-4676-aead-390c2ecb1861"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[STATUS]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="39" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="0" y="0" width="135" height="38" uuid="4a83d0d9-4069-459a-a16a-91a16eb8828f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="1" width="100" height="37" uuid="7fb732d4-ce84-426a-80da-0c03b71efd63"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quant_item_solicitado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="460" y="1" width="95" height="37" uuid="e0b6a310-491a-491e-99a7-03685412a1e4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quant_item_atendido}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="135" y="1" width="125" height="37" uuid="78c8b161-ac99-4be7-8dd3-d36ae33ea31b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_solicitacao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="260" y="0" width="100" height="37" uuid="7dc987a4-2105-45e7-8a85-c169d7f5acf6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status_solicitacao}.equals( "EM_ANALISE" ) ? "EM ANALISE" : $F{status_solicitacao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="76" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<rectangle>
+				<reportElement key="" positionType="FixRelativeToBottom" x="0" y="0" width="555" height="76" forecolor="#45DE4C" backcolor="#1AFF00" uuid="86197673-a62c-447a-ba99-158127499acd"/>
+			</rectangle>
+			<textField pattern="d/M/yy h:mm a">
+				<reportElement x="11" y="29" width="100" height="18" uuid="6d8e8622-32c4-4680-81eb-2fe8e868d944"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement x="494" y="13" width="50" height="50" uuid="c33b69a7-0aa0-4b09-bb8b-791aca553530"/>
+				<imageExpression><![CDATA[$P{IMAGE}+"caapora_logo_gestao.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="46" splitType="Stretch"/>
+	</summary>
+</jasperReport>

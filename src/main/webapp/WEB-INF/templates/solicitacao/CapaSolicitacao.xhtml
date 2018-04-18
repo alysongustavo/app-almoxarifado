@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panelGrid columns="4" style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo, rotulo, campo">
+		<p:outputLabel value="Número" />
+		<h:outputText value="#{cadastroSolicitacaoBean.solicitacao.numero}"/>
+		
+		<p:outputLabel value="Data de criação"/>
+		<p:inputMask style="text-align:center;" size="8" value="#{cadastroSolicitacaoBean.solicitacao.data_solicitacao}" mask="99/99/9999" 
+			disabled="#{cadastroSolicitacaoBean.solicitacao.criada or cadastroSolicitacaoBean.solicitacao.emAnalise
+			  or cadastroSolicitacaoBean.solicitacao.atendida}">
+		   <f:convertDateTime pattern="dd/MM/yyyy"  />
+		</p:inputMask>
+        	
+        <p:outputLabel value="Status"/>
+        <h:outputText value="#{cadastroSolicitacaoBean.solicitacao.status_solicitacao.descricao}" />
+        
+        <p:outputLabel value="Solicitante responsável" for="solicitante"/>
+        <h:outputText value="#{cadastroSolicitacaoBean.solicitacao.setor.responsavel}" id="solicitante"/>
+        
+        <p:outputLabel value="Entidade" for="entidade"/>
+        <h:outputText value="#{cadastroSolicitacaoBean.solicitacao.setor.nome}" id="entidade"/>
+        
+        <p:outputLabel value="Total de itens" style="font-weight: bold; font-size: 1.1em"/>
+        <h:outputText value="#{cadastroSolicitacaoBean.solicitacao.quant_itens_solicitados}" style="font-weight: bold; font-size: 1.1em" id="totalSolicitacao"/>
+        
+	</p:panelGrid>
+  	
+</ui:composition>

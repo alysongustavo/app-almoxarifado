@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/solicitante.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">ESTOQUE</ui:define>
+
+	<ui:define name="corpo">
+	
+		<f:metadata>
+			<f:viewAction action="#{estoqueBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Estoque</h1>
+		
+		<h:form id="frm">
+		
+		<p:messages id="msgs" closable="true" />
+
+		<p:toolbar id="toolbar-estoque" style="margin-top:20px">
+			<p:toolbarGroup>
+							
+					
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:commandButton icon="fa fa-search" value="Pesquisar" action="#{estoqueBean.pesquisar}"
+	    				update="@form" process="@this painel"/>
+			</p:toolbarGroup>
+		</p:toolbar>
+
+		<p:panelGrid columns="2" id="painel"
+			style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+			<p:outputLabel value="NOME DO PRODUTO" for="produto_nome" />
+			<p:inputText id="produto_nome" size="25" maxlength="100" value="#{estoqueBean.filtro.produto_nome}" />
+
+		</p:panelGrid>
+
+		<p:dataTable id="estoque-table" value="#{estoqueBean.todosEstoque}" var="estoque"
+			style="margin-top: 20px" emptyMessage="O estoque encontra-se vazio."
+			rows="9" paginator="true"
+			sortBy="#{estoque.produto.nome}"
+			selection="#{estoqueBean.estoqueSelecionado}"
+			selectionMode="single" rowKey="#{estoque.id}"
+			paginatorPosition="bottom">
+			
+			<p:ajax event="rowSelect" update=":frm:toolbar-estoque" />
+			<p:ajax event="rowUnselect" update=":frm:toolbar-estoque" />
+			
+			<p:column headerText="ID" style="text-align: center; width: 100px; text-align: center;">
+				<h:outputText value="#{estoque.id}" />
+			</p:column>
+			<p:column headerText="NOME DO PRODUTO" style="width: 300px; text-align: center;">
+				<h:outputText value="#{estoque.produto.nome}" />
+			</p:column>
+			<p:column headerText="DISPONIBILIDADE ATUAL" style="width: 150px; text-align: center;">
+				<h:outputText value="#{estoque.quant_total lt 1 ? 'NÃO' : 'SIM'}" />
+			</p:column>
+
+		</p:dataTable>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

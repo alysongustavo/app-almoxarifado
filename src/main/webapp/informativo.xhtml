@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<ui:define name="title_public">SISTEMA DE CONTROLE DE ALMOXARIFADO</ui:define>
+	
+	<f:metadata>
+		<o:viewParam name="informativo" value="#{informativoBean.informativoDetalhes}" />
+	</f:metadata>
+
+	<ui:define name="corpo">
+	
+		<h1 class="aw-page-title" style="margin-left: 5px;">Detalhes do informativo</h1>
+		
+		<p:outputLabel value="#{informativoBean.informativoDetalhes.id}"/>
+
+	</ui:define>
+
+</ui:composition>

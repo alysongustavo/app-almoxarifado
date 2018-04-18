@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">ESTOQUE</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<f:viewAction action="#{estoqueBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Estoque</h1>
+
+		<h:form id="frm">
+
+			<p:messages id="msgs" closable="true" />
+
+			<p:toolbar id="toolbar-estoque" style="margin-top:20px">
+				<p:toolbarGroup>
+
+					<p:commandButton icon="fa fa-clipboard" value="NOVO" update="msgs-dialog"
+						action="#{estoqueBean.prepararNovoCadastro}"
+						oncomplete="PF('estoqueDialog').show()" process="@this">
+						<p:resetInput target="estoque-dialog" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil" title="Editar"
+						value="EDITAR" process="@this" update="estoque-dialog"
+						oncomplete="PF('estoqueDialog').show()"
+						disabled="#{estoqueBean.estoqueSelecionado == null}">
+						<p:resetInput target="painel-dialog" />
+
+						<f:setPropertyActionListener
+							value="#{estoqueBean.estoqueSelecionado}"
+							target="#{estoqueBean.estoqueEdicao}" />
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-external-link" title="VISUALIZAR"
+						value="VISUALIZAR" process="@this" update="estoque-dialog-view"
+						oncomplete="PF('estoqueDialogView').show()"
+						disabled="#{estoqueBean.estoqueSelecionado == null}">
+
+						<f:setPropertyActionListener
+							value="#{estoqueBean.estoqueSelecionado}"
+							target="#{estoqueBean.estoqueEdicao}" />
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-plus-circle" title="ABASTECER ESTOQUE"
+						value="ABASTECER ESTOQUE" process="@this"
+						update="entrada-estoque-dialog"
+						action="#{estoqueBean.prepararNovaEntradaEstoque}"
+						oncomplete="PF('EntradaEstoqueDialog').show()"
+						disabled="#{estoqueBean.estoqueSelecionado == null}">
+
+						<f:setPropertyActionListener
+							value="#{estoqueBean.estoqueSelecionado}"
+							target="#{estoqueBean.estoqueEdicao}" />
+					</p:commandButton>
+
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton id="botaoPesquisar" icon="fa fa-search" value="PESQUISAR"
+						action="#{estoqueBean.pesquisar}" update="@form"
+						process="@this painel" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="6" id="painel"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				<p:outputLabel value="NOME DO PRODUTO" for="produto_nome" />
+				<p:inputText id="produto_nome" size="25" maxlength="100"
+					value="#{estoqueBean.filtro.produto_nome}" />
+			</p:panelGrid>
+			
+			<p:defaultCommand target="botaoPesquisar" scope="painel" />
+
+			<p:dataTable id="estoque-table" value="#{estoqueBean.todosEstoque}"
+				var="estoque" style="margin-top: 20px"
+				emptyMessage="O estoque encontra-se vazio." rows="9"
+				sortBy="#{estoque.produto.nome}" paginator="true"
+				selection="#{estoqueBean.estoqueSelecionado}" selectionMode="single"
+				rowKey="#{estoque.id}" paginatorPosition="bottom">
+
+				<p:ajax event="rowSelect" update=":frm:toolbar-estoque" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-estoque" />
+
+				<p:column headerText="ID"
+					style="text-align: center; width: 100px; text-align: center;">
+					<h:outputText value="#{estoque.id}" />
+				</p:column>
+				<p:column headerText="NOME DO PRODUTO"
+					style="width: 300px; text-align: center;">
+					<h:outputText value="#{estoque.produto.nome}" />
+				</p:column>
+				<p:column headerText="QUANTIDADE DISPONIVEL"
+					style="width: 150px; text-align: center;">
+					<h:outputText value="#{estoque.quant_total}" />
+				</p:column>
+				<p:column headerText="OPÇÕES"
+					style="width: 90px; text-align: center;">
+					<p:commandButton icon="ui-icon-document"
+						process="@this" update=":frm:estoque-abas-dialog"
+						oncomplete="PF('AbastecimentoDialog').show()"
+						disabled="#{estoque.quant_total le 0}">
+
+						<f:setPropertyActionListener
+							value="#{estoque}"
+							target="#{estoqueBean.estoqueAbastecimentos}" />
+
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog widgetVar="estoqueDialog" id="estoque-dialog"
+				header="MONTAR NOVO ESTOQUE" resizable="false"
+				style="min-width: 300px" responsive="true" modal="true">
+
+				<p:messages id="msgs-dialog" closable="true" />
+
+				<p:outputLabel value="campos marcados com * são obrigatorios" />
+				<br />
+
+				<p:panelGrid columns="2" id="painel-dialog"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel value="PRODUTO" for="produto" />
+					<p:selectOneMenu id="produto"
+						value="#{estoqueBean.estoqueEdicao.produto}" required="true">
+						<f:selectItem itemLabel="Selecione o produto" itemValue="" />
+						<f:selectItems value="#{estoqueBean.todosProdutos}" var="produto"
+							itemLabel="#{produto.nome}" itemValue="#{produto}" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="Salvar"
+					id="botaoSalvar" action="#{estoqueBean.salvar}"
+					process=":frm:estoque-dialog"
+					icon="fa fa-save"
+					update="msgs-dialog painel-dialog msgs"
+					oncomplete="if (!args.validationFailed) PF('estoqueDialog').hide()" />
+
+			</p:dialog>
+
+			<p:dialog widgetVar="estoqueDialogView" id="estoque-dialog-view"
+				header="DETALHE DO ESTOQUE" resizable="false"
+				style="min-width: 300px" responsive="true" modal="true">
+
+				<p:panelGrid columns="2" id="painel-dialog-view"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel style="font-weight:bold" value="PRODUTO" />
+					<p:outputLabel value="#{estoqueBean.estoqueEdicao.produto.nome}" />
+
+					<p:outputLabel style="font-weight:bold" value="QUANTIDADE" />
+					<p:outputLabel value="#{estoqueBean.estoqueEdicao.quant_total}" />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="FECHAR"
+					id="botaoView" process="@this"
+					oncomplete="PF('estoqueDialogView').hide()" />
+
+			</p:dialog>
+
+			<p:dialog widgetVar="EntradaEstoqueDialog"
+				id="entrada-estoque-dialog" header="DETALHE DO ESTOQUE"
+				resizable="false" style="min-width: 300px" responsive="true"
+				modal="true">
+
+				<p:messages id="entrada-msgs-dialog" closable="true" />
+
+				<p:panelGrid columns="4" id="painel-dialog-entrada-estoque"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel value="FORNECEDOR" for="fornecedor" />
+					<p:selectOneMenu id="fornecedor"
+						value="#{estoqueBean.entradaEstoqueEdicao.fornecedor}"
+						required="true">
+						<f:selectItem itemLabel="SELECIONE O FORNECEDOR" itemValue="" />
+						<f:selectItems value="#{estoqueBean.todosFornecedores}"
+							var="fornecedor" itemLabel="#{fornecedor.nome_fantasia}"
+							itemValue="#{fornecedor}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="QUANTIDADE" for="quantidade" />
+					<p:spinner id="quantidade"
+						value="#{estoqueBean.entradaEstoqueEdicao.quantidade}"
+						stepFactor="0.5" required="true" />
+
+					<p:outputLabel value="TIPO DE UNIDADE" for="tipo_unidade" />
+					<p:selectOneMenu id="tipo_unidade"
+						value="#{estoqueBean.entradaEstoqueEdicao.tipo_unidade}"
+						required="true">
+						<f:selectItem itemLabel="SELECIONE A UNIDADE" itemValue="" />
+						<f:selectItems value="#{estoqueBean.tipoUnidade}"
+							var="tipo_unidade" itemValue="#{tipo_unidade}"
+							itemLabel="#{tipo_unidade.descricao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="TIPO EMBALAGEM" for="tipo_embalagem" />
+					<p:selectOneMenu id="tipo_embalagem"
+						value="#{estoqueBean.entradaEstoqueEdicao.tipo_embalagem}"
+						required="true">
+						<f:selectItem itemLabel="SELECIONE" itemValue="" />
+						<f:selectItems value="#{estoqueBean.tipoEmbalagem}"
+							var="tipo_embalagem" itemValue="#{tipo_embalagem}"
+							itemLabel="#{tipo_embalagem.descricao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel style="font-weight:bold" value="LOCALIZAÇÃO" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="LOCAL" for="local" />
+					<p:inputText id="local" size="30" maxlength="20"
+						value="#{estoqueBean.entradaEstoqueEdicao.localizacao}" />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel style="font-weight:bold"
+						value="INFORMAÇÕES ADICIONAIS" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="PERECIVEL" for="perecivel" />
+					<p:selectOneRadio id="perecivel"
+						value="#{estoqueBean.entradaEstoqueEdicao.perecivel}"
+						required="true">
+						<f:selectItems value="#{estoqueBean.perecivel}" var="perecivel"
+							itemValue="#{perecivel}" itemLabel="#{perecivel.descricao}" />
+					</p:selectOneRadio>
+
+					<p:outputLabel value="DATA VALIDADE" for="data_validade" />
+					<p:inputMask id="data_validade" mask="99-99-9999"
+						value="#{estoqueBean.entradaEstoqueEdicao.data_validade}">
+						<f:convertDateTime locale="pt-BR" dateStyle="long"
+							pattern="dd-MM-yyyy" />
+					</p:inputMask>
+
+					<p:outputLabel value="QUANTIDADE MINIMA" for="quantidade_minima" />
+					<p:spinner id="quantidade_minima" stepFactor="0.5"
+						value="#{estoqueBean.entradaEstoqueEdicao.quantidade_minima}"
+						required="true" />
+
+					<p:outputLabel value="DATA RECEBIMENTO" for="data_recebimento" />
+					<p:calendar id="data_recebimento"
+						value="#{estoqueBean.entradaEstoqueEdicao.data_recebimento}"
+						locale="pt" required="true" />
+
+					<p:outputLabel value="NOTA FISCAL" for="num_nota_fiscal" />
+					<p:inputText id="num_nota_fiscal" size="25" maxlength="20"
+						value="#{estoqueBean.entradaEstoqueEdicao.nota_fiscal}"
+						required="true" />
+
+					<p:outputLabel value="VALOR DA NOTA FISCAL" for="valor_nota_fiscal" />
+					<p:inputText id="valor_nota_fiscal" size="25" maxlength="20"
+						value="#{estoqueBean.entradaEstoqueEdicao.valor_notafiscal}"
+						styleClass="moeda">
+						<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+					</p:inputText>
+					
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="Abastecer"
+					id="botaoAbastecer" action="#{estoqueBean.abastecerEstoque}"
+					process="entrada-estoque-dialog"
+					update="entrada-msgs-dialog painel-dialog-entrada-estoque"
+					oncomplete="if (!args.validationFailed) PF('EntradaEstoqueDialog').hide()" />
+
+			</p:dialog>
+			
+			<p:dialog widgetVar="AbastecimentoDialog" id="estoque-abas-dialog"
+				header="ABASTECIMENTOS DO ESTOQUE" resizable="false"
+				style="min-width: 300px" responsive="true" modal="true">
+
+				<p:dataTable id="itens-atendido-table"
+					value="#{estoqueBean.estoqueAbastecimentos.entrada_estoque}"
+					var="item" style="margin-top: 20px"
+					emptyMessage="Nenhum item na solicitacao." rows="9"
+					sortBy="#{item.id}" paginator="true" paginatorPosition="bottom">
+
+					<p:column headerText="NOTA FISCAL" style="text-align: center; width: 80px">
+						<h:outputText value="#{item.nota_fiscal}" />
+					</p:column>
+					
+					<p:column headerText="DATA ABASTECIMENTO"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.data_recebimento}" >
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="UNIDADE"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.tipo_unidade}" />
+					</p:column>
+
+					<p:column headerText="QUANTIDADE"
+						style="width: 150px; text-align: center;">
+						<h:outputText value="#{item.quantidade}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:commandButton style="margin-top:15px;" value="FECHAR"
+					id="botaoAtendido" process="@this"
+					oncomplete="PF('AbastecimentoDialog').hide()" />
+
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

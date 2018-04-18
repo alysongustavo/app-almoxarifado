@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title_public">SISTEMA DE CONTROLE DE ALMOXARIFADO</ui:define>
+
+	<ui:define name="corpo">
+	
+		<f:metadata>
+			<f:viewAction action="#{informativoBean.consultar}" />
+		</f:metadata>
+		
+		<h1 class="aw-page-title" style="margin-left: 5px;">Informativos</h1>
+		
+		<p:dataTable id="informativo-table" value="#{informativoBean.todosInformativo}" var="informativo"
+			style="margin-top: 20px" emptyMessage="Nenhum informativo encontrado."
+			rows="20" paginator="true" paginatorAlwaysVisible="false"
+			paginatorPosition="bottom">
+			<p:column headerText="ID" style="text-align: center; width: 100px">
+				<h:outputText value="#{informativo.id}" />
+			</p:column>
+			<p:column headerText="TITULO" style="text-align: center; width: 350px">
+				<h:outputText value="#{informativo.titulo}" />
+			</p:column>
+			<p:column headerText="DATA" style="text-align: center; width: 150px">
+				<h:outputText value="#{informativo.data_cadastro}">
+					<f:convertDateTime pattern="dd.MM.yyyy" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="OPÇÕES" style="width: 100px; text-align: center">
+				<p:button outcome="/informativo" icon="ui-icon-arrow-4-diag" title="Detalhes">
+	    				<f:param name="informativo" value="#{informativo.id}" />
+	    		</p:button>
+			</p:column>
+		</p:dataTable>
+
+	</ui:define>
+
+</ui:composition>

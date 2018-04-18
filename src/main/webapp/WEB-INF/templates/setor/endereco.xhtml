@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panelGrid columns="4" style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo, rotulo, campo">
+		
+					<p:outputLabel value="PAIS" for="pais" />
+					<p:inputText id="pais" size="25"
+						value="#{setorVisualizarPerfilBean.setor_logado.endereco_setor.pais}"
+						maxlength="20" required="true" />
+
+					<p:outputLabel value="UF" for="uf" />
+					<p:inputText id="uf" size="25"
+						value="#{setorVisualizarPerfilBean.setor_logado.endereco_setor.uf}"
+						maxlength="20" required="true" />
+
+					<p:outputLabel value="CIDADE" for="cidade" />
+					<p:inputText id="cidade" size="30"
+						value="#{setorVisualizarPerfilBean.setor_logado.endereco_setor.cidade}"
+						maxlength="50" required="true" />
+
+					<p:outputLabel value="BAIRRO" for="bairro" />
+					<p:inputText id="bairro" size="30"
+						value="#{setorVisualizarPerfilBean.setor_logado.endereco_setor.bairro}"
+						maxlength="50" required="true" />
+
+					<p:outputLabel value="RUA" for="rua" />
+					<p:inputText id="rua" size="30"
+						value="#{setorVisualizarPerfilBean.setor_logado.endereco_setor.rua}"
+						maxlength="50" required="true" />
+
+					<p:outputLabel value="NUMERO" for="numero" />
+					<p:inputText id="numero" size="10"
+						value="#{setorVisualizarPerfilBean.setor_logado.endereco_setor.numero}"
+						maxlength="10" required="true" />
+
+	</p:panelGrid>
+  	
+</ui:composition>

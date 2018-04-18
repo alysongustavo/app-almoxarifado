@@ -1,0 +1,68 @@
+<html>
+    <body>
+        <center>
+          <img src="https://uploaddeimagens.com.br/images/000/928/621/full/logo.png" alt="Prefeitura Municipal de Caaporã face" height="150" width="500"/>
+        </center>
+        <br/>
+                
+        <p>Olá senhor(a) $solicitacao.entidade.responsavel , sua solicitação foi atendida, estamos
+        aguardando sua retirada no setor de estoque. Veja os detalhes abaixo:</p>
+        <br/>
+        
+        <table>
+            <tr>
+                <td style="width: 100px">Número da solicitação:</td>
+                <td>$solicitacao.numero</td>
+            </tr>
+            <tr>
+                <td>Entidade:</td>
+                <td>$solicitacao.entidade.nome</td>
+            </tr>
+            <tr>
+                <td>Quantidade itens atendido:</td>
+                <td>$solicitacao.quant_itens_atendido</td>
+            </tr>
+        </table>
+        
+        <br/>
+        <table border="1" cellspacing="0" cellpadding="3">
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade solicitada</th>
+            </tr>
+            #foreach ($item in $solicitacao.itens_solicitado)
+            	#if ($item.estoque.id)
+	            <tr>
+	                <td>$item.estoque.produto.nome</td>
+	                <td>$item.quant_solicitada</td>
+	            </tr>
+	            #end
+            #end
+        </table>
+        
+        <br/>
+        <br/>
+        
+      	<table border="1" cellspacing="0" cellpadding="3">
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade atendida</th>
+            </tr>
+            #foreach ($item in $solicitacao.itens_atendidos)
+            	#if ($item.estoque.id)
+	            <tr>
+	                <td>$item.estoque.produto.nome</td>
+	                <td>$item.quant_atendida</td>
+	            </tr>
+	            #end
+            #end
+        </table>
+        
+        <br/>
+        <br/>
+        
+        Atenciosamente,<br/>
+        Cookiesoft <br/>
+        Soluções em TI
+    </body>
+</html>

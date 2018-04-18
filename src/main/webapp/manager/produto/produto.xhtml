@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">PRODUTO</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<f:viewAction action="#{produtoBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Produto</h1>
+
+		<h:form id="frm">
+
+			<p:messages id="msgs" closable="true" />
+
+			<p:toolbar id="toolbar-produto" style="margin-top:20px">
+				<p:toolbarGroup>
+					<p:commandButton icon="fa fa-clipboard" value="NOVO"
+						action="#{produtoBean.prepararNovoCadastro}" process="@this"
+						update="produto-dialog" oncomplete="PF('produtoDialog').show()" />
+
+					<p:commandButton icon="ui-icon-pencil" title="EDITAR"
+						value="EDITAR" process="@this" update="produto-dialog"
+						oncomplete="PF('produtoDialog').show()"
+						disabled="#{produtoBean.produtoSelecionado == null}">
+						<p:resetInput target="produto-dialog" />
+
+						<f:setPropertyActionListener
+							value="#{produtoBean.produtoSelecionado}"
+							target="#{produtoBean.produtoEdicao}" />
+					</p:commandButton>
+					
+					<p:commandButton icon="fa fa-external-link" title="VISUALIZAR"
+						value="VISUALIZAR" process="@this" update="produto-dialog-view"
+						oncomplete="PF('produtoDialogView').show()"
+						disabled="#{produtoBean.produtoSelecionado == null}">
+
+						<f:setPropertyActionListener
+							value="#{produtoBean.produtoSelecionado}"
+							target="#{produtoBean.produtoEdicao}" />
+					</p:commandButton>
+					
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton id="botaoPesquisar" value="Pesquisar" action="#{produtoBean.pesquisar}"
+	    				update="@form" process="@this painel" icon="fa fa-search"/>
+				</p:toolbarGroup>
+				
+			</p:toolbar>
+
+			<p:panelGrid columns="4" id="painel"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				
+				
+				<p:outputLabel value="NOME" for="pequisa_nome" />
+				<p:inputText id="pequisa_nome" size="30" maxlength="20" value="#{produtoBean.filtro.nome}" />
+				
+				<p:outputLabel value="CATEGORIA" for="buscar_categoria" />
+				<p:selectOneMenu id="buscar_categoria" value="#{produtoBean.filtro.categoria}">
+					<f:selectItem itemLabel="SELECIONE A CATEGORIA" itemValue="" />
+					<f:selectItems value="#{produtoBean.todasCategorias}"
+						var="categoria" itemLabel="#{categoria.nome}"
+						itemValue="#{categoria.nome}" />
+				</p:selectOneMenu>
+
+			</p:panelGrid>
+			
+			<p:defaultCommand target="botaoPesquisar" scope="painel" />
+
+			<p:dataTable id="produto-table" value="#{produtoBean.todosProdutos}"
+				var="produto" style="margin-top: 20px"
+				emptyMessage="Nenhum produto encontrado." rows="9" paginator="true"
+				sortBy="#{produto.nome}"
+				selection="#{produtoBean.produtoSelecionado}" selectionMode="single"
+				paginatorPosition="bottom" rowKey="#{produto.id}">
+
+				<p:ajax event="rowSelect" update=":frm:toolbar-produto" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-produto" />
+
+
+				<p:column headerText="ID" style="text-align: center; width: 100px">
+					<h:outputText value="#{produto.id}" />
+				</p:column>
+				<p:column headerText="NOME" style="width: 250px;text-align: center;">
+					<h:outputText value="#{produto.nome}" />
+				</p:column>
+				<p:column headerText="CATEGORIA"
+					style="width: 150px;text-align: center;">
+					<h:outputText value="#{produto.categoria.nome}" />
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog id="produto-dialog" widgetVar="produtoDialog"
+				header="NOVO PRODUTO" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:messages id="msgs-dialog" closable="true" />
+
+				<p:outputLabel value="campos marcados com * são obrigatorios" />
+				<br />
+
+				<p:panelGrid columns="4" id="painel-dialog"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel value="NOME" for="nome" />
+					<p:inputText id="nome" size="25"
+						value="#{produtoBean.produtoEdicao.nome}" maxlength="100"
+						required="true" />
+
+					<p:outputLabel value="CATEGORIA" for="insert_categoria" />
+					<p:selectOneMenu id="insert_categoria"
+						value="#{produtoBean.produtoEdicao.categoria}" required="true">
+						<f:selectItem itemLabel="SELECIONE A CATEGORIA" itemValue="" />
+						<f:selectItems value="#{produtoBean.todasCategorias}"
+							var="categoria" itemLabel="#{categoria.nome}"
+							itemValue="#{categoria}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="DESCRICAO" for="descricao" />
+					<p:inputTextarea cols="25" rows="4" id="descricao" size="30"
+						value="#{produtoBean.produtoEdicao.descricao}" maxlength="255" />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="Salvar"
+					id="botaoSalvar" action="#{produtoBean.salvar}"
+					icon="fa fa-save"
+					process="produto-dialog" update="msgs-dialog painel-dialog msgs"
+					oncomplete="if (!args.validationFailed) PF('produtoDialog').hide()" />
+
+			</p:dialog>
+			
+			<p:dialog id="produto-dialog-view" widgetVar="produtoDialogView"
+				header="DETALHES DO PRODUTO" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:panelGrid columns="2" id="painel-dialog-view"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel style="font-weight:bold" value="NOME" />
+					<p:outputLabel value="#{produtoBean.produtoEdicao.nome}"/>
+
+					<p:outputLabel style="font-weight:bold" value="CATEGORIA"/>
+					<p:outputLabel value="#{produtoBean.produtoEdicao.categoria.nome}"/>
+
+					<p:outputLabel style="font-weight:bold" value="DESCRICAO"/>
+					<p:outputLabel value="#{produtoBean.produtoEdicao.descricao}" />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="FECHAR" icon="fa fa-close"
+					id="botaoView" process="@this" oncomplete="PF('produtoDialogView').hide()" />
+
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

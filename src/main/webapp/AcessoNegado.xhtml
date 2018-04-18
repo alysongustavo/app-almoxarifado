@@ -1,0 +1,22 @@
+<ui:composition template="/WEB-INF/templates/public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<ui:define name="title_public">Erro</ui:define>
+
+	<ui:define name="corpo">
+		<div style="width: 500px; margin: auto;">
+			<center>
+				<h:graphicImage width="350px" height="250px"
+					library="imagens" name="logo.png" />
+				<h1>Opps! Parece que você não tem permissão para acessar essa
+					area.</h1>
+				 <p:button outcome="/perfil.xhtml" value="Voltar para Pagina principal"/>
+			</center>
+		</div>
+	</ui:define>
+</ui:composition>

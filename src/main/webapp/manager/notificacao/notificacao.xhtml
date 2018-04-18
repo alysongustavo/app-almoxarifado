@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="title">NOTIFICACOES</ui:define>
+	
+	<ui:define name="corpo">
+	
+		<f:metadata>
+			<f:viewAction action="#{notificacaoBean.consultar}" />
+		</f:metadata>
+	
+		<h1 class="aw-page-title" style="margin-left: 5px;">Notificações</h1>
+		
+		<h:form id="frm">
+
+		<p:toolbar id="toolbar-informativo" style="margin-top:20px">
+			<p:toolbarGroup>
+				<p:commandButton icon="ui-icon-document" value="Abrir chamado" process="@this" />
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:button value="Pesquisa" />
+			</p:toolbarGroup>
+		</p:toolbar>
+
+		<p:panelGrid columns="4" id="painel-notificacao"
+			style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+			<p:outputLabel value="TITULO" for="buscar_titulo" />
+			<p:inputText id="buscar_titulo" size="25" maxlength="20" />
+
+			<p:outputLabel value="DATA" for="data" />
+			<p:calendar id="data" />
+
+		</p:panelGrid>
+
+		<p:dataTable id="notificacao-table" value="#{notificacaoBean.todasNotificacoes}" var="notificacao"
+			style="margin-top: 20px" emptyMessage="Nenhuma notificacao encontrado."
+			sortBy="#{notificacao.data_cadastro}"
+			rows="20" paginator="true" paginatorPosition="bottom" paginatorAlwaysVisible="false">
+			<p:column headerText="ID" style="text-align: center; width: 80px">
+				<h:outputText value="#{notificacao.id}" />
+			</p:column>
+			<p:column headerText="TITULO" style="width: 250px; text-align: center;">
+				<h:outputText value="#{notificacao.titulo}" />
+			</p:column>
+			<p:column headerText="DATA" style="width: 150px; text-align: center;">
+				<h:outputText value="#{notificacao.data_cadastro}">
+					<f:convertDateTime pattern="dd.MM.yyyy" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="OPÇÕES" style="width: 100px; text-align: center">
+				<p:commandButton icon="ui-icon-arrow-4-diag" title="Visualizar" />
+			</p:column>
+		</p:dataTable>
+		
+		</h:form>
+	</ui:define>
+
+</ui:composition>

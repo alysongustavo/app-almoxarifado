@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">SETOR</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<f:viewAction action="#{setorBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Setor</h1>
+
+		<h:form id="frm">
+
+			<p:messages id="msgs" closable="true" />
+
+			<p:toolbar id="toolbar-setor" style="margin-top:20px">
+				<p:toolbarGroup>
+					<p:commandButton icon="fa fa-clipboard" value="NOVO"
+						action="#{setorBean.prepararNovoCadastro}" process="@this"
+						update="setor-dialog" oncomplete="PF('setorDialog').show()" />
+
+					<p:commandButton icon="fa fa-external-link" title="VISUALIZAR"
+						value="VISUALIZAR" process="@this" update="setor-dialog-view"
+						oncomplete="PF('setorDialogView').show()"
+						disabled="#{setorBean.setorSelecionado == null}">
+
+						<f:setPropertyActionListener
+							value="#{setorBean.setorSelecionado}"
+							target="#{setorBean.setorEdicao}" />
+					</p:commandButton>
+
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton icon="fa fa-search" id="botaoPesquisar" value="Pesquisar" action="#{setorBean.pesquisar}"
+	    				update="@form" process="@this painel"/>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="2" id="painel"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				<p:outputLabel value="NOME" for="buscar_nome" />
+				<p:inputText id="buscar_nome" size="25" maxlength="60" value="#{setorBean.filtro.nome}" />
+				
+			</p:panelGrid>
+			
+			 <p:defaultCommand target="botaoPesquisar" scope="painel" />
+
+			<p:dataTable id="setor-table"
+				value="#{setorBean.todosSetores}" var="setor"
+				selection="#{setorBean.setorSelecionado}"
+				sortBy="#{setor.nome}"
+				style="margin-top: 20px" emptyMessage="Nenhum setor encontrado."
+				selectionMode="single" rowKey="#{setor.id}"
+				rows="9" paginator="true" paginatorPosition="bottom">
+				
+				<p:ajax event="rowSelect" update=":frm:toolbar-setor" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-setor" />
+
+				<p:column headerText="ID" style="text-align: center; width: 50px">
+					<h:outputText value="#{setor.id}" />
+				</p:column>
+				<p:column headerText="NOME"
+					style="width: 350px; text-align: center;">
+					<h:outputText value="#{setor.nome}" />
+				</p:column>
+				<p:column headerText="SETOR"
+					style="width: 250px; text-align: center;">
+					<h:outputText value="#{setor.orgao.nome}" />
+				</p:column>
+				<p:column headerText="RESPONSAVEL"
+					style="width: 150px;text-align: center;; width: 200px;">
+					<h:outputText value="#{setor.responsavel}" />
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog widgetVar="setorDialog" id="setor-dialog"
+				header="NOVO SETOR" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true" closeOnEscape="true">
+
+				<p:messages id="msgs-dialog" closable="true" />
+				<p:defaultCommand target="botaoSalvar" scope="setor-dialog" />
+
+				<p:outputLabel value="campos marcados com * são obrigatorios" />
+				<br />
+
+				<p:panelGrid columns="4" id="painel-dialog"
+					style="width: 100%; margin-top: 20px; overflow-y: auto"
+					columnClasses="rotulo, campo">
+
+					<p:outputLabel style="font-weight:bold" value="DADOS GERAIS" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="NOME" for="nome" />
+					<p:inputText id="nome" value="#{setorBean.setorEdicao.nome}" size="25" maxlength="60" required="true" />
+
+					<p:outputLabel value="ORGÂO" for="insert_orgao" />
+					<p:selectOneMenu id="insert_orgao" value="#{setorBean.setorEdicao.orgao}" required="true">
+						<f:selectItem itemLabel="SELECIONE O ORGÂO" itemValue="" />
+						<f:selectItems value="#{setorBean.todosOrgaos}" var="orgao"
+							itemLabel="#{orgao.nome}" itemValue="#{orgao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="GRUPO" for="grupo" />
+					<p:selectManyMenu id="grupo" value="#{setorBean.setorEdicao.grupos}" required="true"
+						converter="grupoConverter">
+						<f:attribute name="collectionType" value="java.util.ArrayList"/>
+						<f:selectItems value="#{setorBean.todosGrupos}" var="grupo"
+							itemLabel="#{grupo.descricao}" itemValue="#{grupo}" />
+					</p:selectManyMenu>
+
+					<p:outputLabel value="RESPONSAVEL" for="responsavel" />
+					<p:inputText id="responsavel" value="#{setorBean.setorEdicao.responsavel}" size="25"
+						maxlength="20" required="true" />
+
+					<p:outputLabel value="CPF DO RESPONSAVEL" for="cpf" />
+					<p:inputMask id="cpf" size="25" mask="999.999.999-99"
+						value="#{setorBean.setorEdicao.cpf_responsavel}"
+						maxlength="20" required="true" />
+
+					<p:outputLabel value="SENHA" for="senha" />
+					<p:password id="senha" feedback="true" size="25" label="Senha" 
+						value="#{setorBean.setorEdicao.senha}" match="confirma_senha" promptLabel="Informe a senha"
+						weakLabel="Fraca" goodLabel="Boa" strongLabel="Forte" 
+						validatorMessage="Os campos 'Senha' e 'Confirmar senha' não são iguais" maxlength="10"
+						autocomplete="off" redisplay="true"
+						required="true" />
+
+					<p:outputLabel value="CONFIRMA SENHA" for="confirma_senha" />
+					<p:password id="confirma_senha" value="#{setorBean.setorEdicao.senha}" size="25" maxlength="20" label="Confirmar senha"
+						autocomplete="off" redisplay="true"
+						required="true" />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel style="font-weight:bold" value="ENDEREÇO" />
+					<h:outputLabel value="" />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="PAIS" for="pais" />
+					<p:inputText id="pais" size="25"
+						value="#{setorBean.setorEdicao.endereco_setor.pais}"
+						maxlength="20" required="true" />
+
+					<p:outputLabel value="UF" for="uf" />
+					<p:selectOneMenu id="uf"
+						value="#{setorBean.setorEdicao.endereco_setor.uf}"
+						required="true">
+						<f:selectItem itemLabel="SELECIONE O ESTADO" itemValue="" />
+						<f:selectItem itemLabel="ACRE" itemValue="ACRE" />
+						<f:selectItem itemLabel="ALAGOAS" itemValue="ALAGOAS" />
+						<f:selectItem itemLabel="AMAPA" itemValue="AMAPA" />
+						<f:selectItem itemLabel="AMAZONAS" itemValue="AMAZONAS" />
+						<f:selectItem itemLabel="BAHIA" itemValue="BAHIA" />
+						<f:selectItem itemLabel="CEARA" itemValue="CEARA" />
+						<f:selectItem itemLabel="DISTRITO FEDERAL"
+							itemValue="DISTRITO FEDERAL" />
+						<f:selectItem itemLabel="ESPIRITO SANTO"
+							itemValue="ESPIRITO SANTO" />
+						<f:selectItem itemLabel="GOIAS" itemValue="GOIAS" />
+						<f:selectItem itemLabel="MARANHAO" itemValue="MARANHAO" />
+						<f:selectItem itemLabel="MATO GROSSO" itemValue="MATO GROSSO" />
+						<f:selectItem itemLabel="MATO GROSSO DO SUL"
+							itemValue="MOTO GROSSO DO SUL" />
+						<f:selectItem itemLabel="MINAS GERAIS" itemValue="MINAS GERAIS" />
+						<f:selectItem itemLabel="PARA" itemValue="PARA" />
+						<f:selectItem itemLabel="PARAIBA" itemValue="PARAIBA" />
+						<f:selectItem itemLabel="PARANA" itemValue="PARANA" />
+						<f:selectItem itemLabel="PERNAMBUCO" itemValue="PERNAMBUCO" />
+						<f:selectItem itemLabel="PIAUI" itemValue="PIAUI" />
+						<f:selectItem itemLabel="RIO DE JANEIRO"
+							itemValue="RIO DE JANEIRO" />
+						<f:selectItem itemLabel="RIO GRANDE DO NORTE"
+							itemValue="RIO GRANDE DO NORTE" />
+						<f:selectItem itemLabel="RIO GRANDE DO SUL"
+							itemValue="RIO GRANDE DO SUL" />
+						<f:selectItem itemLabel="RONDONIA" itemValue="RONDONIA" />
+						<f:selectItem itemLabel="RORAIMA" itemValue="RORAIMA" />
+						<f:selectItem itemLabel="SANTA CATARINA"
+							itemValue="SANTA CATARINA" />
+						<f:selectItem itemLabel="SAO PAULO" itemValue="SAO PAULO" />
+						<f:selectItem itemLabel="SERGIPE" itemValue="SERGIPE" />
+						<f:selectItem itemLabel="TOCANTIS" itemValue="TOCANTIS" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="CIDADE" for="cidade" />
+					<p:inputText id="cidade" size="30"
+						value="#{setorBean.setorEdicao.endereco_setor.cidade}"
+						maxlength="50" required="true" />
+
+					<p:outputLabel value="BAIRRO" for="bairro" />
+					<p:inputText id="bairro" size="30"
+						value="#{setorBean.setorEdicao.endereco_setor.bairro}"
+						maxlength="50" required="true" />
+
+					<p:outputLabel value="RUA" for="rua" />
+					<p:inputText id="rua" size="30"
+						value="#{setorBean.setorEdicao.endereco_setor.rua}"
+						maxlength="50" required="true" />
+
+					<p:outputLabel value="NUMERO" for="numero" />
+					<p:inputText id="numero" size="10"
+						value="#{setorBean.setorEdicao.endereco_setor.numero}"
+						maxlength="10" required="true" />
+
+					<p:outputLabel style="font-weight:bold" value="CONTATO" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="TELEFONE" for="telefone" />
+					<p:inputMask id="telefone" size="25" mask="(99)9999-9999"
+						value="#{setorBean.setorEdicao.contato_setor.telefone}"
+						maxlength="20" />
+
+					<p:outputLabel value="CELULAR" for="celular" />
+					<p:inputMask id="celular" size="25" mask="(99)99999-9999"
+						value="#{setorBean.setorEdicao.contato_setor.celular}"
+						maxlength="20" />
+
+					<p:outputLabel value="EMAIL" for="email" />
+					<p:inputText id="email" size="30"
+						value="#{setorBean.setorEdicao.contato_setor.email}"
+						maxlength="50" />
+
+					<p:outputLabel value="WHATSAPP" for="whatsapp" />
+					<p:inputMask id="whatsapp" size="25" mask="(99)99999-9999"
+						value="#{setorBean.setorEdicao.contato_setor.whatsapp}"
+						maxlength="20" />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="Salvar"
+					id="botaoSalvar" action="#{setorBean.salvar}"
+					process="setor-dialog"
+					icon="fa fa-save"
+					update="msgs-dialog painel-dialog"
+					oncomplete="if (!args.validationFailed) PF('setorDialog').hide()" />
+
+			</p:dialog>
+			
+			
+			<p:dialog widgetVar="setorDialogView" id="setor-dialog-view"
+				header="DETALHES DO SETOR" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:panelGrid columns="4" id="painel-dialog-view"
+					style="width: 100%; margin-top: 20px; overflow-y: auto"
+					columnClasses="rotulo, campo">
+
+					<p:outputLabel style="font-weight:bold" value="DADOS GERAIS" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel style="font-weight:bold" value="NOME"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.nome}"/>
+
+					<p:outputLabel style="font-weight:bold" value="ORGÃO"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.orgao.nome}"/>
+
+					<p:outputLabel style="font-weight:bold" value="CPF DO RESPONSAVEL" />
+					<p:outputLabel value="#{setorBean.setorEdicao.cpf_responsavel}"/>
+
+					<p:outputLabel style="font-weight:bold" value="RESPONSAVEL"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.responsavel}"/>
+		
+					<p:outputLabel style="font-weight:bold" value="ENDEREÇO" />
+					<h:outputLabel value="" />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="PAIS"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.endereco_setor.pais}"/>
+
+					<p:outputLabel style="font-weight:bold" value="UF" />
+					<p:outputLabel value="#{setorBean.setorEdicao.endereco_setor.uf}"/>
+
+					<p:outputLabel style="font-weight:bold" value="CIDADE"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.endereco_setor.cidade}"/>
+
+					<p:outputLabel style="font-weight:bold" value="BAIRRO"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.endereco_setor.bairro}"/>
+
+					<p:outputLabel style="font-weight:bold" value="RUA" />
+					<p:outputLabel value="#{setorBean.setorEdicao.endereco_setor.rua}" />
+
+					<p:outputLabel value="NUMERO"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.endereco_setor.numero}" />
+
+					<p:outputLabel style="font-weight:bold" value="CONTATO" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel style="font-weight:bold"  value="TELEFONE" />
+					<p:outputLabel value="#{setorBean.setorEdicao.contato_setor.telefone}" />
+
+					<p:outputLabel style="font-weight:bold" value="CELULAR"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.contato_setor.celular}" />
+
+					<p:outputLabel style="font-weight:bold" value="EMAIL"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.contato_setor.email}" />
+
+					<p:outputLabel style="font-weight:bold" value="WHATSAPP"/>
+					<p:outputLabel value="#{setorBean.setorEdicao.contato_setor.whatsapp}" />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="FECHAR" icon="fa fa-close"
+					id="botaoView" process="@this" oncomplete="PF('setorDialogView').hide()" />
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

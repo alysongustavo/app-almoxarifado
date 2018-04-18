@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/admin.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="title">NOTIFICACOES</ui:define>
+	
+	<ui:define name="corpo">
+	
+		<f:metadata>
+			<f:viewAction action="#{notificacaoBean.consultar}" />
+		</f:metadata>
+	
+		<h1 class="aw-page-title" style="margin-left: 5px;">Notificações</h1>
+		
+		<h:form id="frm">
+
+		<p:toolbar id="toolbar-informativo" style="margin-top:20px">
+			<p:toolbarGroup>
+				<p:commandButton icon="fa fa-clipboard" value="Novo"
+						action="#{notificacaoBean.prepararNovoCadastro}" process="@this"
+						update="notificacao-dialog" oncomplete="PF('notificacaoDialog').show()"/>
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:button value="Pesquisa" icon="fa fa-search" />
+			</p:toolbarGroup>
+		</p:toolbar>
+
+		<p:panelGrid columns="4" id="painel-notificacao"
+			style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+			<p:outputLabel value="TITULO" for="buscar_titulo" />
+			<p:inputText id="buscar_titulo" size="25" maxlength="20" />
+
+			<p:outputLabel value="DATA" for="data" />
+			<p:calendar id="data" />
+
+		</p:panelGrid>
+
+		<p:dataTable id="notificacao-table" value="#{notificacaoBean.todasNotificacoes}" var="notificacao"
+			style="margin-top: 20px" emptyMessage="Nenhuma notificacao encontrado."
+			rows="9" paginator="true" paginatorPosition="bottom">
+			<p:column headerText="ID" style="text-align: center; width: 80px">
+				<h:outputText value="#{notificacao.id}" />
+			</p:column>
+			<p:column headerText="TITULO" style="width: 250px; text-align: center;">
+				<h:outputText value="#{notificacao.titulo}" />
+			</p:column>
+			<p:column headerText="STATUS" style="width: 250px; text-align: center;">
+				<h:outputText value="#{notificacao.status.descricao}" />
+			</p:column>
+			<p:column headerText="DATA" style="width: 150px; text-align: center;">
+				<h:outputText value="#{notificacao.data_cadastro}" >
+					<f:convertDateTime pattern="dd.MM.yyyy" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="OPÇÕES" style="width: 100px; text-align: center">
+				<p:button icon="ui-icon-pencil" title="Editar" />
+				<p:commandButton icon="ui-icon-trash" title="Excluir"
+					oncomplete="confirmacaoExclusao.show()" />
+			</p:column>
+		</p:dataTable>
+
+		<p:dialog widgetVar="notificacaoDialog" id="notificacao-dialog" header="NOVA NOTIFICACAO" resizable="false"
+			style="min-width: 300px" responsive="true" modal="true">
+			
+			<p:messages id="msgs-dialog" />
+
+			<p:panelGrid columns="2" id="painel-cadastro"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				
+				<p:outputLabel value="TITULO" for="titulo" />
+				<p:inputText id="titulo" value="#{notificacaoBean.notificacaoEdicao.titulo}" size="40" maxlength="100" />
+				
+				<p:outputLabel value="DESCRICAO" for="descricao" />
+				<p:inputTextarea rows="6" value="#{notificacaoBean.notificacaoEdicao.descricao}" id="descricao" cols="40" maxlength="500" />
+				
+			</p:panelGrid>
+			
+			<p:commandButton style="margin-top:15px;" value="Salvar"
+					id="botaoSalvar" action="#{notificacaoBean.salvar}"
+					process="notificacao-dialog" update="msgs-dialog painel-cadastro notificacao-table"
+						oncomplete="if (!args.validationFailed) PF('notificacaoDialog').hide()" />
+
+		</p:dialog>
+		
+		</h:form>
+	</ui:define>
+
+</ui:composition>

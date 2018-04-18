@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+	<f:metadata>
+		<f:viewParam name="dummy" />
+		<o:viewParam name="solicitacao" value="#{atendimentoBean.solicitacao}" />
+		<f:viewAction action="#{atendimentoBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="title">Atendimento</ui:define>
+
+
+	<ui:define name="corpo">
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Atendimento a
+			solicitação: #{atendimentoBean.solicitacao.numero}</h1>
+
+		<h:form id="frm">
+
+			<p:messages autoUpdate="true" closable="true" />
+
+			<ui:include
+				src="/WEB-INF/templates/atendimento/BotoesAtendimento.xhtml" />
+
+			<ui:include
+				src="/WEB-INF/templates/atendimento/CapaAtendimento.xhtml" />
+
+			<p:tabView style="margin-top: 20px;">
+				<p:tab title="Itens">
+					<ui:include
+						src="/WEB-INF/templates/atendimento/ItensAtendido.xhtml" />
+				</p:tab>
+			</p:tabView>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">FORNECEDORES</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<f:viewAction action="#{fornecedorBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Fornecedores</h1>
+
+		<h:form id="frm">
+		
+			<p:messages id="msgs" closable="true" />
+
+			<p:toolbar id="toolbar-fornecedor" style="margin-top:20px">
+				<p:toolbarGroup>
+					<p:commandButton icon="fa fa-clipboard" value="NOVO"
+						action="#{fornecedorBean.prepararNovoCadastro}" process="@this"
+						update="fornecedor-dialog"
+						oncomplete="PF('fornecedorDialog').show()">
+						<p:resetInput target="fornecedor-dialog" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil" title="EDITAR"
+						value="EDITAR" process="@this" update="fornecedor-dialog"
+						oncomplete="PF('fornecedorDialog').show()"
+						disabled="#{fornecedorBean.fornecedorSelecionado == null}">
+
+						<f:setPropertyActionListener
+							value="#{fornecedorBean.fornecedorSelecionado}"
+							target="#{fornecedorBean.fornecedorEdicao}" />
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-external-link" title="VISUALIZAR"
+						value="VISUALIZAR" process="@this" update="fornecedor-dialog-view"
+						oncomplete="PF('fornecedorDialogView').show()"
+						disabled="#{fornecedorBean.fornecedorSelecionado == null}">
+
+						<f:setPropertyActionListener
+							value="#{fornecedorBean.fornecedorSelecionado}"
+							target="#{fornecedorBean.fornecedorEdicao}" />
+					</p:commandButton>
+					
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton id="botaoPesquisar" value="Pesquisar" action="#{fornecedorBean.pesquisar}"
+	    				update="@form" icon="fa fa-search" process="@this painel" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="4" id="painel"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				<p:outputLabel value="NOME FANTASIA" for="buscar_nome_fantasia" />
+				<p:inputText id="buscar_nome_fantasia" size="25" maxlength="20" value="#{fornecedorBean.filtro.nome_fantasia}" />
+
+				<p:outputLabel value="RESPONSAVEL" for="buscar_resṕonsavel" />
+				<p:inputText id="buscar_resṕonsavel" size="30" maxlength="100" value="#{fornecedorBean.filtro.responsavel}" />
+
+			</p:panelGrid>
+			
+			<p:defaultCommand target="botaoPesquisar" scope="painel" />
+
+			<p:dataTable id="fornecedor-table"
+				value="#{fornecedorBean.todosFornecedor}" var="fornecedor"
+				style="margin-top: 20px"
+				sortBy="#{fornecedor.nome_fantasia}"
+				selection="#{fornecedorBean.fornecedorSelecionado}"
+				selectionMode="single"
+				emptyMessage="Nenhum fornecedor encontrado." rows="10"
+				paginator="true" paginatorPosition="bottom" rowKey="#{fornecedor.id}">
+				
+				<p:ajax event="rowSelect" update=":frm:toolbar-fornecedor" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-fornecedor" />
+				
+				<p:column headerText="ID" style="text-align: center; width: 100px">
+					<h:outputText value="#{fornecedor.id}" />
+				</p:column>
+				<p:column headerText="NOME FANTASIA"
+					style="width: 250px;text-align: center;">
+					<h:outputText value="#{fornecedor.nome_fantasia}" />
+				</p:column>
+				<p:column headerText="CNPJ" style="width: 150px;text-align: center;">
+					<h:outputText value="#{fornecedor.cnpj}" />
+				</p:column>
+				<p:column headerText="RESPONSAVEL"
+					style="width: 150px;text-align: center;">
+					<h:outputText value="#{fornecedor.responsavel}" />
+				</p:column>
+				<p:column headerText="CONTATO"
+					style="width: 150px;text-align: center;">
+					<h:outputText value="#{fornecedor.contato_fornecedor.telefone}" />
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog id="fornecedor-dialog" widgetVar="fornecedorDialog"
+				header="NOVO FORNECEDOR" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:messages id="msgs-dialog" closable="true" />
+
+				<p:outputLabel value="campos marcados com * são obrigatorios" />
+				<br />
+
+				<p:panelGrid columns="4" id="painel-dialog"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel style="font-weight:bold" value="DADOS GERAIS" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="NOME FANTASIA" for="nome_fantasia" />
+					<p:inputText
+						value="#{fornecedorBean.fornecedorEdicao.nome_fantasia}"
+						id="nome_fantasia" size="40" maxlength="100" required="true" />
+
+					<p:outputLabel value="CNPJ" for="cnpj" />
+					<p:inputMask mask="99.999.999/9999-99" value="#{fornecedorBean.fornecedorEdicao.cnpj}"
+						id="cnpj" size="30" maxlength="20" required="true" />
+
+					<p:outputLabel value="RESPONSAVEL" for="responsavel" />
+					<p:inputText value="#{fornecedorBean.fornecedorEdicao.responsavel}"
+						id="responsavel" size="40" maxlength="100" required="true" />
+
+					<p:outputLabel value="RAMO DA EMPRESA" for="ramo_empresa" />
+					<p:inputText
+						value="#{fornecedorBean.fornecedorEdicao.ramo_empresa}"
+						id="ramo_empresa" size="30" maxlength="60" required="true" />
+
+					<p:outputLabel style="font-weight:bold" value="ENDERECO" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="PAIS" for="pais" />
+					<p:inputText
+						value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.pais}"
+						id="pais" size="30" maxlength="60" required="true" />
+
+					<p:outputLabel value="UF" for="uf" />
+					<p:selectOneMenu id="uf"
+						value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.uf}"
+						required="true">
+						<f:selectItem itemLabel="SELECIONE O ESTADO" itemValue="" />
+						<f:selectItem itemLabel="ACRE" itemValue="ACRE" />
+						<f:selectItem itemLabel="ALAGOAS" itemValue="ALAGOAS" />
+						<f:selectItem itemLabel="AMAPA" itemValue="AMAPA" />
+						<f:selectItem itemLabel="AMAZONAS" itemValue="AMAZONAS" />
+						<f:selectItem itemLabel="BAHIA" itemValue="BAHIA" />
+						<f:selectItem itemLabel="CEARA" itemValue="CEARA" />
+						<f:selectItem itemLabel="DISTRITO FEDERAL"
+							itemValue="DISTRITO FEDERAL" />
+						<f:selectItem itemLabel="ESPIRITO SANTO"
+							itemValue="ESPIRITO SANTO" />
+						<f:selectItem itemLabel="GOIAS" itemValue="GOIAS" />
+						<f:selectItem itemLabel="MARANHAO" itemValue="MARANHAO" />
+						<f:selectItem itemLabel="MATO GROSSO" itemValue="MATO GROSSO" />
+						<f:selectItem itemLabel="MATO GROSSO DO SUL"
+							itemValue="MOTO GROSSO DO SUL" />
+						<f:selectItem itemLabel="MINAS GERAIS" itemValue="MINAS GERAIS" />
+						<f:selectItem itemLabel="PARA" itemValue="PARA" />
+						<f:selectItem itemLabel="PARAIBA" itemValue="PARAIBA" />
+						<f:selectItem itemLabel="PARANA" itemValue="PARANA" />
+						<f:selectItem itemLabel="PERNAMBUCO" itemValue="PERNAMBUCO" />
+						<f:selectItem itemLabel="PIAUI" itemValue="PIAUI" />
+						<f:selectItem itemLabel="RIO DE JANEIRO"
+							itemValue="RIO DE JANEIRO" />
+						<f:selectItem itemLabel="RIO GRANDE DO NORTE"
+							itemValue="RIO GRANDE DO NORTE" />
+						<f:selectItem itemLabel="RIO GRANDE DO SUL"
+							itemValue="RIO GRANDE DO SUL" />
+						<f:selectItem itemLabel="RONDONIA" itemValue="RONDONIA" />
+						<f:selectItem itemLabel="RORAIMA" itemValue="RORAIMA" />
+						<f:selectItem itemLabel="SANTA CATARINA"
+							itemValue="SANTA CATARINA" />
+						<f:selectItem itemLabel="SAO PAULO" itemValue="SAO PAULO" />
+						<f:selectItem itemLabel="SERGIPE" itemValue="SERGIPE" />
+						<f:selectItem itemLabel="TOCANTIS" itemValue="TOCANTIS" />
+
+					</p:selectOneMenu>
+
+					<p:outputLabel value="CIDADE" for="cidade" />
+					<p:inputText id="cidade"
+						value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.cidade}"
+						size="40" maxlength="60" required="true" />
+
+					<p:outputLabel value="BAIRRO" for="bairro" />
+					<p:inputText id="bairro"
+						value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.bairro}"
+						size="30" maxlength="60" required="true" />
+
+					<p:outputLabel value="RUA" for="rua" />
+					<p:inputText id="rua"
+						value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.rua}"
+						size="40" maxlength="100" required="true" />
+
+					<p:outputLabel value="NUMERO" for="numero" />
+					<p:inputText id="numero"
+						value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.numero}"
+						size="10" maxlength="20" required="true" />
+
+					<p:outputLabel style="font-weight:bold" value="CONTATO" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel value="TELEFONE" for="telefone" />
+					<p:inputMask  id="telefone" mask="(99)9999-9999"
+						value="#{fornecedorBean.fornecedorEdicao.contato_fornecedor.telefone}"
+						size="30" maxlength="20" required="true" />
+
+					<p:outputLabel value="WHATSAPP" for="whatsapp" />
+					<p:inputMask id="whatsapp" mask="(99)99999-9999"
+						value="#{fornecedorBean.fornecedorEdicao.contato_fornecedor.whatsapp}"
+						size="25" maxlength="20" />
+
+					<p:outputLabel value="EMAIL" for="email" />
+					<p:inputText id="email"
+						value="#{fornecedorBean.fornecedorEdicao.contato_fornecedor.email}"
+						size="40" maxlength="100" required="true" />
+
+					<p:outputLabel value="SITE" for="site" />
+					<p:inputText id="site"
+						value="#{fornecedorBean.fornecedorEdicao.contato_fornecedor.site}"
+						size="25" maxlength="255" />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:20px" value="Salvar"
+					id="botaoSalvar" action="#{fornecedorBean.salvar}"
+					process="fornecedor-dialog"
+					icon="fa fa-save"
+					update="msgs-dialog painel-dialog msgs"
+					oncomplete="if (!args.validationFailed) PF('fornecedorDialog').hide()" />
+
+			</p:dialog>
+			
+			<p:dialog id="fornecedor-dialog-view" widgetVar="fornecedorDialogView"
+				header="DETALHES DO FORNECEDOR" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:panelGrid columns="4" id="painel-dialog-view"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel style="font-weight:bold" value="DADOS GERAIS" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel style="font-weight:bold" value="NOME FANTASIA"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.nome_fantasia}"/>
+
+					<p:outputLabel style="font-weight:bold" value="CNPJ" />
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.cnpj}"/>
+
+					<p:outputLabel style="font-weight:bold" value="RESPONSAVEL" for="responsavel_view" />
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.responsavel}"
+						id="responsavel_view" />
+
+					<p:outputLabel style="font-weight:bold" value="RAMO DA EMPRESA"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.ramo_empresa}"/>
+
+					<p:outputLabel style="font-weight:bold" value="ENDERECO" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel style="font-weight:bold" value="PAIS" />
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.pais}"/>
+
+					<p:outputLabel style="font-weight:bold" value="UF"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.uf}"/>
+
+					<p:outputLabel style="font-weight:bold" value="CIDADE"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.cidade}"/>
+
+					<p:outputLabel style="font-weight:bold" value="BAIRRO" />
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.bairro}" />
+
+					<p:outputLabel style="font-weight:bold" value="RUA"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.rua}"/>
+
+					<p:outputLabel style="font-weight:bold" value="NUMERO"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.endereco_fornecedor.numero}" />
+
+					<p:outputLabel style="font-weight:bold" value="CONTATO" />
+					<h:panelGroup />
+
+					<h:panelGroup />
+					<h:panelGroup />
+
+					<p:outputLabel style="font-weight:bold" value="TELEFONE"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.contato_fornecedor.telefone}" />
+
+					<p:outputLabel style="font-weight:bold" value="WHATSAPP"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.contato_fornecedor.whatsapp}"/>
+
+					<p:outputLabel style="font-weight:bold" value="EMAIL"/>
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.contato_fornecedor.email}" />
+
+					<p:outputLabel style="font-weight:bold" value="SITE" />
+					<p:outputLabel value="#{fornecedorBean.fornecedorEdicao.contato_fornecedor.site}"/>
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:20px" value="Fechar"
+					id="botaoView" process="@this"
+					icon="fa fa-close"
+					oncomplete="PF('fornecedorDialogView').hide()" />
+
+			</p:dialog>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

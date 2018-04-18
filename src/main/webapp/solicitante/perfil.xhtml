@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/solicitante.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title_public">SISTEMA DE CONTROLE DE ALMOXARIFADO</ui:define>
+
+	<ui:define name="corpo">
+	
+		<h1 class="aw-page-title" style="margin-left: 5px;">Dados do setor</h1>
+		
+		<p:tabView style="margin-top: 20px;">
+				<p:tab title="Dados pessoais">
+					<ui:include src="/WEB-INF/templates/setor/dados_pessoais.xhtml" />
+				</p:tab>
+				<p:tab title="Endereco">
+					<ui:include src="/WEB-INF/templates/setor/endereco.xhtml" />
+				</p:tab>
+				<p:tab title="Contato">
+					<ui:include src="/WEB-INF/templates/setor/contato.xhtml" />
+				</p:tab>
+			</p:tabView>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">Orgao</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<f:viewAction action="#{orgaoBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Orgaos</h1>
+
+		<h:form id="frm">
+		
+		<p:messages id="msgs" closable="true" />
+
+			<p:toolbar id="toolbar-orgao" style="margin-top:20px">
+				<p:toolbarGroup>
+					<p:commandButton icon="fa fa-clipboard" value="NOVO"
+						action="#{orgaoBean.prepararNovoCadastro}" process="@this"
+						update="orgao-dialog" oncomplete="PF('orgaoDialog').show()" />
+
+					<p:commandButton icon="ui-icon-pencil" title="EDITAR"
+						value="EDITAR" process="@this" update="orgao-dialog"
+						oncomplete="PF('orgaoDialog').show()"
+						disabled="#{orgaoBean.orgaoSelecionado == null}">
+						<p:resetInput target="orgao-dialog" />
+
+						<f:setPropertyActionListener
+							value="#{orgaoBean.orgaoSelecionado}"
+							target="#{orgaoBean.orgaoEdicao}" />
+					</p:commandButton>
+					
+					<p:commandButton icon="fa fa-external-link" title="VISUALIZAR"
+						value="VISUALIZAR" process="@this" update="orgao-dialog-view"
+						oncomplete="PF('orgaoDialogView').show()"
+						disabled="#{orgaoBean.orgaoSelecionado == null}">
+						<p:resetInput target="orgao-dialog-view" />
+
+						<f:setPropertyActionListener
+							value="#{orgaoBean.orgaoSelecionado}"
+							target="#{orgaoBean.orgaoEdicao}" />
+					</p:commandButton>
+
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton icon="fa fa-search" id="botaoPesquisar" value="Pesquisar" action="#{orgaoBean.pesquisar}"
+	    				update="@form" process="@this painel"/>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="4" id="painel"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				<p:outputLabel value="NOME" for="pesquisa_nome" />
+				<p:inputText id="pesquisa_nome" size="25" maxlength="20" value="#{orgaoBean.filtro.nome}" />
+			</p:panelGrid>
+			
+			<p:defaultCommand target="botaoPesquisar" scope="painel" />
+
+			<p:dataTable id="orgao-table" value="#{orgaoBean.todosOrgaos}"
+				var="orgao" style="margin-top: 20px"
+				selection="#{orgaoBean.orgaoSelecionado}"
+				selectionMode="single" rowKey="#{orgao.id}"
+				sortBy="#{orgao.nome}"
+				emptyMessage="Nenhum orgao encontrado." rows="9" paginator="true"
+				paginatorPosition="bottom">
+				
+				<p:ajax event="rowSelect" update=":frm:toolbar-orgao" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-orgao" />
+				
+				<p:column headerText="ID" style="text-align: center; width: 50px">
+					<h:outputText value="#{orgao.id}" />
+				</p:column>
+				<p:column headerText="NOME" style="width: 100px;text-align: center;">
+					<h:outputText value="#{orgao.nome}" />
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog widgetVar="orgaoDialog" header="NOVO ORGAO"
+				id="orgao-dialog" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:messages id="msgs-dialog" closable="true" />
+
+				<p:outputLabel value="campos marcados com * são obrigatorios" />
+				<br />
+
+				<p:panelGrid columns="4" id="painel-dialog"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel value="NOME" for="nome" />
+					<p:inputText id="nome" size="25"
+						value="#{orgaoBean.orgaoEdicao.nome}" maxlength="100"
+						required="true" />
+
+					<p:outputLabel value="DESCRICAO" for="descricao" />
+					<p:inputText id="descricao"
+						value="#{orgaoBean.orgaoEdicao.descricao}" maxlength="255" />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="Salvar"
+					id="botaoSalvar" action="#{orgaoBean.salvar}"
+					process="orgao-dialog"
+					icon="fa fa-save"
+					update="msgs-dialog painel-dialog msgs"
+					oncomplete="if (!args.validationFailed) PF('orgaoDialog').hide()" />
+
+			</p:dialog>
+			
+			<p:dialog widgetVar="orgaoDialogView" header="DETALHES DO ORGAO"
+				id="orgao-dialog-view" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:panelGrid columns="2" id="painel-dialog-view"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel style="font-weight:bold" value="NOME"/>
+					<p:outputLabel value="#{orgaoBean.orgaoEdicao.nome}" />
+
+					<p:outputLabel style="font-weight:bold" value="DESCRICAO" />
+					<p:outputLabel value="#{orgaoBean.orgaoEdicao.descricao}" />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="FECHAR"
+					id="botaoView" process="@this"
+					icon="fa fa-close"
+					oncomplete="PF('orgaoDialogView').hide()" />
+
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

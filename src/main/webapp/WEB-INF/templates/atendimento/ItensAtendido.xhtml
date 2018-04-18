@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:dataTable value="#{atendimentoBean.solicitacao.itens_atendidos}" style="width:100%"  var="item" rowIndexVar="linha" id="tabelaItens">
+		<p:column headerText="Estoque" style="text-align: center; width: 49%">
+			<h:outputText value="#{item.estoque.produto.nome}" rendered="#{item.estoqueAssociado}" />
+		
+			<p:autoComplete styleClass="produto-tabela" value="#{atendimentoBean.estoqueLinhaEditavelAtend}"
+				completeMethod="#{atendimentoBean.completarEstoque}"
+				var="estoque" itemLabel="#{estoque.produto.nome}" itemValue="#{estoque}" 
+				forceSelection="true" rendered="#{not item.estoqueAssociado}">
+				<p:ajax event="itemSelect" update="tabelaItens" 
+					listener="#{atendimentoBean.carregarEstoqueLinhaEditavelAtendimento}"/>
+			</p:autoComplete>
+			
+		</p:column>
+		
+		<p:column headerText="Quantidade" style="text-align: center; width: 49%">
+			<p:inputText style="text-align:center;" size="8" value="#{item.quant_atendida}" disabled="#{atendimentoBean.solicitacao.atendida}">
+				<p:ajax event="change" process="@this"
+					update="tabelaItens"
+					listener="#{atendimentoBean.atualizarQuantidade(item,linha)}" />
+			</p:inputText>
+		</p:column>
+		
+		<p:columnGroup type="footer">
+			<p:row>
+				
+				<p:column/>
+				<p:column style="text-align: right">
+					<f:facet name="footer">
+					    <h:outputText value="Quantidade itens atendido: " style="text-align: right"/>
+						<h:outputText value="#{atendimentoBean.solicitacao.quant_itens_atendido}" id="totalAtendido"/>
+					</f:facet>
+				</p:column>
+			</p:row>
+		</p:columnGroup>
+	</p:dataTable>
+  	
+</ui:composition>

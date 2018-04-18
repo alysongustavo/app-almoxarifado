@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Acesso ao sistema</title>
+	<h:outputStylesheet library="css" name="styles.css" />
+</h:head>
+<h:body>
+	<f:metadata>
+		<f:viewParam name="dummy" />
+		<f:event listener="#{loginBean.preRender}" type="preRenderView" />
+	</f:metadata>
+	<header>
+		<div>
+			<h:graphicImage width="150px" height="60px" library="imagens"
+				name="logo.png" />
+		</div>
+	</header>
+	<div id="corpo">
+		<h:form id="frm" prependId="false">
+
+			<p:messages id="messages" autoUpdate="true" closable="true" />
+
+			<div id="frm-login">
+				<h:graphicImage width="150px" height="60px" library="imagens"
+					name="logo.png" />
+				<h:panelGrid columns="2" styleClass="grid-login">
+					<p:outputLabel value="CPF" />
+					<p:inputMask mask="999.999.999-99" size="30" id="username"
+						value="#{loginBean.cpf}" />
+					<p:outputLabel value="Senha" />
+					<p:password size="30" id="password" />
+					<h:panelGroup />
+					<h:panelGroup style="margin-top:5px">
+						<p:commandButton value="Entrar" action="#{loginBean.login}"
+							ajax="false" />
+						<h:outputLink style="margin-left:5px" value="#{facesContext.externalContext.requestContextPath}/recuperar_senha.xhtml">
+						  Recuperar senha
+						</h:outputLink>	
+					</h:panelGroup>
+
+				</h:panelGrid>
+			</div>
+		</h:form>
+	</div>
+	<footer> </footer>
+</h:body>
+</html>

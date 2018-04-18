@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="corpo">
+	
+		<f:metadata>
+			<f:viewAction action="#{categoriaBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Categorias</h1>
+
+		<h:form id="frm">
+
+			<p:messages id="msgs" closable="true" />
+
+			<p:toolbar id="toolbar-categoria" style="margin-top:20px">
+				<p:toolbarGroup>
+					<p:commandButton icon="fa fa-clipboard" value="NOVO"
+						action="#{categoriaBean.prepararNovoCadastro}"
+						process="@this"
+						update="categoria-dialog"
+						oncomplete="PF('categoriaDialog').show()"/>
+						
+					<p:commandButton icon="ui-icon-pencil" title="EDITAR" value="EDITAR" 
+            			process="@this" update="categoria-dialog"
+            			oncomplete="PF('categoriaDialog').show()"
+            			disabled="#{categoriaBean.categoriaSelecionada == null}">
+            			<p:resetInput target="categoria-dialog" />
+            			
+            			<f:setPropertyActionListener value="#{categoriaBean.categoriaSelecionada}" 
+            				target="#{categoriaBean.categoriaEdicao}" />
+            		</p:commandButton>
+            		
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton id="botaoPesquisar" value="Pesquisar" action="#{categoriaBean.pesquisar}"
+	    				update="@form" process="@this painel" icon="fa fa-search"/>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="4" id="painel"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				<p:outputLabel value="NOME" for="nome_busca" />
+				<p:inputText id="nome_busca" size="25" maxlength="20" value="#{categoriaBean.filtro.nome}" />
+
+			</p:panelGrid>
+			
+			<p:defaultCommand target="botaoPesquisar" scope="painel" />
+
+			<p:dataTable value="#{categoriaBean.todasCategorias}" var="categoria"
+				emptyMessage="Nenhuma categoria encontrado." rows="8"
+				selection="#{categoriaBean.categoriaSelecionada}"
+				sortBy="#{categoria.nome}"
+				paginator="true" paginatorPosition="bottom"
+				selectionMode="single" style="margin-top: 10px" 
+				id="categoria-table" rowKey="#{categoria.id}">
+				
+				<p:ajax event="rowSelect" update=":frm:toolbar-categoria" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-categoria" />
+				
+				<p:column headerText="ID" style="text-align: center; width: 50px">
+					<h:outputText value="#{categoria.id}" />
+				</p:column>
+				<p:column headerText="NOME" style="width: 350px">
+					<h:outputText value="#{categoria.nome}" />
+				</p:column>
+
+			</p:dataTable>
+
+			<p:dialog id="categoria-dialog" widgetVar="categoriaDialog"
+				header="NOVA CATEGORIA" resizable="false" style="min-width: 200px"
+				responsive="true" modal="true">
+				
+				<p:messages id="msgs-dialog" closable="true" />
+				
+				<p:outputLabel value="campos marcados com * são obrigatorios" /><br/>
+
+				<p:panelGrid id="painel-dialog" columns="2" style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+					<p:outputLabel style="font-weight:bold" value="NOME" for="nome" />
+					<h:inputText size="50" id="nome" value="#{categoriaBean.categoriaEdicao.nome}" required="true" maxlength="100" />
+
+				</p:panelGrid>
+				<p:commandButton style="margin-top:15px;" value="Salvar"
+					id="botaoSalvar" action="#{categoriaBean.salvar}"
+					icon="fa fa-save"
+					process="categoria-dialog" update="msgs-dialog painel-dialog msgs"
+						oncomplete="if (!args.validationFailed) PF('categoriaDialog').hide()" />
+
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/operador.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title">INFORMATIVOS</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<f:viewAction action="#{informativoBean.consultar}" />
+		</f:metadata>
+
+		<h1 class="aw-page-title" style="margin-left: 5px;">Informativos</h1>
+
+		<h:form id="frm">
+
+			<p:messages id="msgs" closable="true" />
+
+			<p:toolbar id="toolbar-informativo" style="margin-top:20px">
+				<p:toolbarGroup>
+					<p:commandButton icon="fa fa-clipboard" value="NOVO"
+						action="#{informativoBean.prepararNovoCadastro}" process="@this"
+						update="informativo-dialog"
+						oncomplete="PF('informativoDialog').show()" />
+
+					<p:commandButton icon="ui-icon-pencil" title="EDITAR"
+						value="EDITAR" process="@this" update="informativo-dialog"
+						oncomplete="PF('informativoDialog').show()"
+						disabled="#{informativoBean.informativoSelecionado == null}">
+						<p:resetInput target="informativo-dialog" />
+
+						<f:setPropertyActionListener
+							value="#{informativoBean.informativoSelecionado}"
+							target="#{informativoBean.informativoEdicao}" />
+					</p:commandButton>
+					
+					<p:commandButton icon="fa fa-external-link" title="VISUALIZAR"
+						value="VISUALIZAR" process="@this" update="informativo-dialog-view"
+						oncomplete="PF('informativoDialogView').show()"
+						disabled="#{informativoBean.informativoSelecionado == null}">
+
+						<f:setPropertyActionListener
+							value="#{informativoBean.informativoSelecionado}"
+							target="#{informativoBean.informativoEdicao}" />
+					</p:commandButton>
+
+
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="PESQUISAR" icon="fa fa-search" action="#{informativoBean.pesquisar}"
+	    				update="@form" process="@this painel-informativo"/>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="2" id="painel-informativo"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+				<p:outputLabel value="TITULO" for="buscar_titulo" />
+				<p:inputText id="buscar_titulo" size="25" maxlength="20" value="#{informativoBean.filtro.titulo}" />
+
+			</p:panelGrid>
+
+			<p:dataTable id="informativo-table"
+				value="#{informativoBean.todosInformativo}" var="informativo"
+				style="margin-top: 20px"
+				sortBy="#{informativo.data_cadastro}"
+				selection="#{informativoBean.informativoSelecionado}"
+				emptyMessage="Nenhum fornecedor encontrado." rows="20"
+				selectionMode="single" rowKey="#{informativo.id}"
+				paginator="true" paginatorPosition="bottom"
+				paginatorAlwaysVisible="false">
+				
+				<p:ajax event="rowSelect" update=":frm:toolbar-informativo" />
+				<p:ajax event="rowUnselect" update=":frm:toolbar-informativo" />
+				
+				<p:column headerText="ID" style="text-align: center; width: 80px">
+					<h:outputText value="#{informativo.id}" />
+				</p:column>
+				<p:column headerText="TITULO"
+					style="width: 250px; text-align: center;">
+					<h:outputText value="#{informativo.titulo}" />
+				</p:column>
+				<p:column headerText="DATA"
+					style="width: 150px; text-align: center;">
+					<h:outputText value="#{informativo.data_cadastro}" >
+						<f:convertDateTime pattern="dd.MM.yyyy" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog widgetVar="informativoDialog" id="informativo-dialog"
+				header="NOVO INFORMATIVO" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:messages id="msgs-dialog" closable="true" />
+
+				<p:outputLabel value="campos marcados com * são obrigatorios" />
+				<br />
+
+				<p:panelGrid columns="2" id="painel-dialog"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel value="TITULO" for="titulo" />
+					<p:inputText id="titulo"
+						value="#{informativoBean.informativoEdicao.titulo}" size="40"
+						maxlength="100" required="true" />
+
+					<p:outputLabel value="DESCRICAO" for="descricao" />
+					<p:inputTextarea rows="6"
+						value="#{informativoBean.informativoEdicao.descricao}"
+						id="descricao" cols="40" maxlength="1000" required="true" />
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="Salvar"
+					id="botaoSalvar" action="#{informativoBean.salvar}"
+					process="informativo-dialog"
+					icon="fa fa-save"
+					update="msgs-dialog painel-dialog msgs"
+					oncomplete="if (!args.validationFailed) PF('informativoDialog').hide()" />
+
+			</p:dialog>
+			
+			<p:dialog widgetVar="informativoDialogView" id="informativo-dialog-view"
+				header="DETALHE DO INFORMATIVO" resizable="false" style="min-width: 300px"
+				responsive="true" modal="true">
+
+				<p:panelGrid columns="2" id="painel-dialog-view"
+					style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+					<p:outputLabel style="font-weight:bold" value="TITULO" />
+					<p:outputLabel value="#{informativoBean.informativoEdicao.titulo}" />
+					
+					<p:outputLabel style="font-weight:bold" value="TITULO" />
+					<p:outputLabel value="#{informativoBean.informativoEdicao.data_cadastro}" >
+						<f:convertDateTime pattern="dd.MM.yyyy" />
+					</p:outputLabel>
+
+					<p:outputLabel style="font-weight:bold" value="DESCRICAO" />
+					<p:inputTextarea rows="6" disabled="true" value="#{informativoBean.informativoEdicao.descricao}"
+						cols="40"/>
+
+				</p:panelGrid>
+
+				<p:commandButton style="margin-top:15px;" value="VISUALIZAR"
+					id="botaoView" process="@this" oncomplete="PF('informativoDialog').hide()" />
+
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>
