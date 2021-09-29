@@ -1,6 +1,6 @@
 package br.gov.prefeitura.almoxarifado.util.utilitarios;
 
-import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 
 public class GeneratedHashPasswordUtil {
 
@@ -10,8 +10,7 @@ public class GeneratedHashPasswordUtil {
 
 		MessageDigestPasswordEncoder digestPasswordEncoder = getInstanceMessageDisterPassword();
 
-		String encodePassword = digestPasswordEncoder.encodePassword(password,
-				salt);
+		String encodePassword = digestPasswordEncoder.encode(password);
 
 		return encodePassword;
 

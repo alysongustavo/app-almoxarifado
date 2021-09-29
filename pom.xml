@@ -35,7 +35,7 @@
 		<commons-lang3.version>3.1</commons-lang3.version>
 		<commons-beanutils.version>1.9.2</commons-beanutils.version>
 
-		<simple-email.version>0.2.5-SNAPSHOT</simple-email.version>
+		<simple-email.version>0.2.4-SNAPSHOT</simple-email.version>
 
 		<javax.mail.version>1.4.7</javax.mail.version>
 
@@ -393,9 +393,9 @@
 				<version>${flyway-maven-plugin.version}</version>
 				<configuration>
 					<driver>org.postgresql.Driver</driver>
-					<url>jdbc:postgresql://[HOST]:[PORT]/[DATA_BASE]</url>
-					<user>[USER]</user>
-					<password>[PASSWORD]</password>
+					<url>jdbc:postgresql://192.168.1.102:5432/db_almoxarifado</url>
+					<user>postgres</user>
+					<password>computacao2014</password>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -408,6 +408,20 @@
 
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>clearfly-releases</name>
+			<url>https://mvn.clearfly.net/artifactory/libs-release</url>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<name>clearfly-snapshots</name>
+			<url>https://mvn.clearfly.net/artifactory/libs-snapshot</url>
+		</repository>
+	</repositories>
+
 
 
 </project>
